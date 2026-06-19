@@ -30,21 +30,43 @@ cp .env.example .env.local   # vul daarna je eigen waarden in
 npm run dev
 ```
 
-### Firebase-config invullen
+### Firebase-project aanmaken (stap voor stap)
 
-1. Maak een Firebase-project op <https://console.firebase.google.com>.
-2. **Firestore Database** aanmaken (productie- of testmodus — zie regels hieronder).
-3. **Project settings → General → Your apps → Web app** → kopieer de SDK-config.
-4. Plak de waarden in `.env.local`:
+1. Ga naar <https://console.firebase.google.com> en log in met je Google-account.
+2. Klik op **Add project** (of "Project toevoegen").
+   - Geef het een naam, bijv. `mercato`. Firebase maakt er een uniek
+     project-id van (bijv. `mercato-1a2b3`) — dat heb je straks nodig.
+   - **Google Analytics** mag je uitzetten; het is niet nodig voor deze app.
+   - Klik **Create project** en wacht tot het klaar is.
+3. **Firestore Database aanmaken:** in het linkermenu **Build → Firestore
+   Database → Create database**.
+   - Kies een **locatie** (bijv. `eur3 (europe-west)` voor NL).
+   - Kies **Start in production mode** (we zetten zo de juiste regels). Klik
+     **Create**.
+4. **Beveiligingsregels instellen:** tabblad **Rules** in Firestore → vervang de
+   inhoud door die van `firestore.rules` uit deze repo → **Publish**. (Zie ook
+   "Firestore-regels" hieronder.)
+5. **Web-app registreren (voor de config):** klik op het tandwiel ⚙️ naast
+   *Project Overview* → **Project settings** → tab **General** → scroll naar
+   **Your apps** → klik het **`</>` (Web)** icoon.
+   - Geef een bijnaam, bijv. `mercato-web`. **Firebase Hosting hoeft niet**
+     aangevinkt (we hosten op GitHub Pages). Klik **Register app**.
+   - Je ziet nu een `firebaseConfig` object. Kopieer die waarden.
+6. Plak de waarden in `.env.local`:
 
 ```
-VITE_FIREBASE_API_KEY=...
-VITE_FIREBASE_AUTH_DOMAIN=...
-VITE_FIREBASE_PROJECT_ID=...
-VITE_FIREBASE_STORAGE_BUCKET=...
-VITE_FIREBASE_MESSAGING_SENDER_ID=...
-VITE_FIREBASE_APP_ID=...
+VITE_FIREBASE_API_KEY=...            # firebaseConfig.apiKey
+VITE_FIREBASE_AUTH_DOMAIN=...        # firebaseConfig.authDomain
+VITE_FIREBASE_PROJECT_ID=...         # firebaseConfig.projectId
+VITE_FIREBASE_STORAGE_BUCKET=...     # firebaseConfig.storageBucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=...# firebaseConfig.messagingSenderId
+VITE_FIREBASE_APP_ID=...             # firebaseConfig.appId
 ```
+
+> Deze web-config is **geen geheim**: bij elke client-side Firebase-app komt
+> die mee in de browser. De beveiliging zit in de Firestore-regels, niet in het
+> verbergen van deze waarden. Voor de gedeployde site zet je dezelfde zes
+> waarden als **GitHub Actions secrets** (zie §3).
 
 ### Firestore-regels
 
