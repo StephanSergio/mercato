@@ -10,10 +10,11 @@ import {
   orderBy,
 } from 'firebase/firestore'
 import { db, COLLECTIONS } from '../firebase'
+import type { Ingredient } from '../types'
 
 // Realtime hook voor alle ingrediënten, alfabetisch op naam.
 export function useIngredients() {
-  const [ingredients, setIngredients] = useState([])
+  const [ingredients, setIngredients] = useState<Ingredient[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -24,7 +25,9 @@ export function useIngredients() {
     const unsub = onSnapshot(
       q,
       (snap) => {
-        setIngredients(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
+        setIngredients(
+          snap.docs.map((d) => ({ id: d.id, ...d.data() }) as Ingredient)
+        )
         setLoading(false)
       },
       (err) => {
@@ -35,13 +38,15 @@ export function useIngredients() {
     return unsub
   }, [])
 
-  const addIngredient = (data) =>
+  const addIngredient = (data: Omit<Ingredient, 'id'>) =>
     addDoc(collection(db, COLLECTIONS.ingredients), data)
 
-  const updateIngredient = (id, data) =>
-    updateDoc(doc(db, COLLECTIONS.ingredients, id), data)
+  const updateIngredient = (
+    id: string,
+    data: Partial<Omit<Ingredient, 'id'>>
+  ) => updateDoc(doc(db, COLLECTIONS.ingredients, id), data)
 
-  const removeIngredient = (id) =>
+  const removeIngredient = (id: string) =>
     deleteDoc(doc(db, COLLECTIONS.ingredients, id))
 
   return {

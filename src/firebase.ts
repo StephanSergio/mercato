@@ -31,4 +31,4 @@ export const COLLECTIONS = {
   ingredients: 'ingredients',
   shoppingList: 'shoppingList',
   categories: 'categories',
-}
+} as const

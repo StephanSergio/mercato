@@ -2,21 +2,30 @@ import { useState } from 'react'
 
 const PRESETS = ['Susanne', 'Stephan', 'Miles', 'Julian']
 
+interface NameModalProps {
+  current: string
+  onSave: (name: string) => void
+  onClose: () => void
+  dismissible: boolean
+}
+
 // "Wie ben jij?" — naam instellen, opgeslagen in localStorage.
-export default function NameModal({ current, onSave, onClose, dismissible }) {
+export default function NameModal({
+  current,
+  onSave,
+  onClose,
+  dismissible,
+}: NameModalProps) {
   const [value, setValue] = useState(current || '')
 
-  function submit(e) {
+  function submit(e: React.FormEvent) {
     e.preventDefault()
     if (!value.trim()) return
     onSave(value)
   }
 
   return (
-    <div
-      className="modal-overlay"
-      onClick={dismissible ? onClose : undefined}
-    >
+    <div className="modal-overlay" onClick={dismissible ? onClose : undefined}>
       <form
         className="modal"
         onClick={(e) => e.stopPropagation()}

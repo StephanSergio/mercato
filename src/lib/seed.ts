@@ -4,15 +4,11 @@
 // Schrijft alleen als de collecties leeg zijn, om dubbels te voorkomen.
 // ============================================================
 
-import {
-  collection,
-  getDocs,
-  writeBatch,
-  doc,
-} from 'firebase/firestore'
+import { collection, getDocs, writeBatch, doc } from 'firebase/firestore'
 import { db, COLLECTIONS } from '../firebase'
+import type { Category, Ingredient } from '../types'
 
-export const defaultCategories = [
+export const defaultCategories: Omit<Category, 'id'>[] = [
   { name: 'Groente & Fruit', icon: '🥦', order: 1 },
   { name: 'Vlees & Vis', icon: '🥩', order: 2 },
   { name: 'Zuivel & Eieren', icon: '🧀', order: 3 },
@@ -27,7 +23,7 @@ export const defaultCategories = [
 ]
 
 // Korte helper om saledatums leesbaar te houden in de seed.
-const sale = (saleStore, saleLabel, saleUntil) => ({
+const sale = (saleStore: string, saleLabel: string, saleUntil: string) => ({
   onSale: true,
   saleStore,
   saleLabel,
@@ -35,7 +31,7 @@ const sale = (saleStore, saleLabel, saleUntil) => ({
 })
 const noSale = { onSale: false, saleStore: '', saleLabel: '', saleUntil: '' }
 
-export const defaultIngredients = [
+export const defaultIngredients: Omit<Ingredient, 'id'>[] = [
   // --- Groente & Fruit ---
   { name: 'Banaan', category: 'Groente & Fruit', store: ['AH', 'Lidl'], unit: 'stuk', ...noSale },
   { name: 'Tomaten', category: 'Groente & Fruit', store: ['AH', 'Lidl', 'Deka'], unit: '500g', ...sale('Lidl', '2 voor €2', '2026-06-22') },
@@ -108,13 +104,21 @@ export const defaultIngredients = [
   { name: 'Afwasmiddel', category: 'Huishouden & Verzorging', store: ['AH', 'Lidl'], unit: '500ml', ...noSale },
 ]
 
+export interface SeedResult {
+  seeded: boolean
+  message: string
+}
+
 // Vult de database. Retourneert een statusbericht.
-export async function seedDatabase() {
+export async function seedDatabase(): Promise<SeedResult> {
   const catSnap = await getDocs(collection(db, COLLECTIONS.categories))
   const ingSnap = await getDocs(collection(db, COLLECTIONS.ingredients))
 
   if (!catSnap.empty && !ingSnap.empty) {
-    return { seeded: false, message: 'Database bevat al gegevens — niets gedaan.' }
+    return {
+      seeded: false,
+      message: 'Database bevat al gegevens — niets gedaan.',
+    }
   }
 
   const batch = writeBatch(db)
@@ -133,8 +137,8 @@ export async function seedDatabase() {
   await batch.commit()
   return {
     seeded: true,
-    message: `Toegevoegd: ${catSnap.empty ? defaultCategories.length : 0} categorieën, ${
-      ingSnap.empty ? defaultIngredients.length : 0
-    } ingrediënten.`,
+    message: `Toegevoegd: ${
+      catSnap.empty ? defaultCategories.length : 0
+    } categorieën, ${ingSnap.empty ? defaultIngredients.length : 0} ingrediënten.`,
   }
 }

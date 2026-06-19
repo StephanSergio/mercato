@@ -2,6 +2,21 @@ import { useMemo, useState } from 'react'
 import CategoryHeader from './ui/CategoryHeader'
 import IngredientRow from './ui/IngredientRow'
 import { isActiveSale } from '../lib/dates'
+import type { Category, Ingredient } from '../types'
+
+interface IngredientBrowserProps {
+  ingredients: Ingredient[]
+  categories: Category[]
+  onListIngredientIds: Set<string>
+  onToggleIngredient: (ingredient: Ingredient) => void
+}
+
+interface Group {
+  name: string
+  icon: string
+  order: number
+  items: Ingredient[]
+}
 
 // Ingrediënten bladeren, gegroepeerd per categorie. Zoekbalk + aanbiedingsfilter.
 // Tik een item aan om toe te voegen aan / verwijderen van de winkellijst.
@@ -10,12 +25,12 @@ export default function IngredientBrowser({
   categories,
   onListIngredientIds,
   onToggleIngredient,
-}) {
+}: IngredientBrowserProps) {
   const [search, setSearch] = useState('')
   const [onlySales, setOnlySales] = useState(false)
 
   const categoryOrder = useMemo(() => {
-    const m = new Map()
+    const m = new Map<string, Category>()
     categories.forEach((c) => m.set(c.name, c))
     return m
   }, [categories])
@@ -29,17 +44,22 @@ export default function IngredientBrowser({
     })
   }, [ingredients, search, onlySales])
 
-  const groups = useMemo(() => {
-    const byCat = new Map()
+  const groups = useMemo<Group[]>(() => {
+    const byCat = new Map<string, Ingredient[]>()
     filtered.forEach((ing) => {
       const key = ing.category || 'Overig'
       if (!byCat.has(key)) byCat.set(key, [])
-      byCat.get(key).push(ing)
+      byCat.get(key)!.push(ing)
     })
-    const arr = [...byCat.entries()].map(([name, list]) => {
+    const arr: Group[] = [...byCat.entries()].map(([name, list]) => {
       const cat = categoryOrder.get(name)
       list.sort((a, b) => a.name.localeCompare(b.name, 'nl'))
-      return { name, icon: cat?.icon || '📦', order: cat?.order ?? 999, items: list }
+      return {
+        name,
+        icon: cat?.icon || '📦',
+        order: cat?.order ?? 999,
+        items: list,
+      }
     })
     arr.sort((a, b) => a.order - b.order)
     return arr

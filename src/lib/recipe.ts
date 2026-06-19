@@ -8,6 +8,8 @@
 // browser. Zie README voor de veiligere proxy-variant.
 // ============================================================
 
+import type { Recipe } from '../types'
+
 const API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY
 // Optionele proxy (Firebase Function / Worker). Als deze is gezet, gaat de
 // aanroep via de proxy en blijft de API-sleutel server-side. Zie functions/.
@@ -36,17 +38,29 @@ Geef het recept terug als JSON met deze structuur (ALLEEN JSON, geen uitleg erbu
   "tip": "Een praktische tip van Jamie-stijl."
 }`
 
+// Vorm van een tekst-blok in de Anthropic Messages-respons.
+interface AnthropicTextBlock {
+  type: string
+  text?: string
+}
+interface AnthropicResponse {
+  content?: AnthropicTextBlock[]
+  error?: { message?: string }
+}
+
 // Pakt het eerste JSON-object uit de tekst (model kan soms tekst eromheen zetten).
-function extractJson(text) {
+function extractJson(text: string): Recipe {
   const start = text.indexOf('{')
   const end = text.lastIndexOf('}')
   if (start === -1 || end === -1 || end < start) {
     throw new Error('Geen JSON gevonden in het antwoord.')
   }
-  return JSON.parse(text.slice(start, end + 1))
+  return JSON.parse(text.slice(start, end + 1)) as Recipe
 }
 
-export async function generateRecipe(ingredientList) {
+export async function generateRecipe(
+  ingredientList: string[]
+): Promise<Recipe> {
   if (!isRecipeEnabled) {
     throw new Error(
       'Receptenfunctie staat uit (geen proxy of API-sleutel ingesteld).'
@@ -68,7 +82,7 @@ export async function generateRecipe(ingredientList) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': API_KEY,
+          'x-api-key': API_KEY as string,
           'anthropic-version': '2023-06-01',
           // Vereist om de API rechtstreeks vanuit de browser te mogen aanroepen.
           'anthropic-dangerous-direct-browser-access': 'true',
@@ -91,20 +105,18 @@ export async function generateRecipe(ingredientList) {
   if (!res.ok) {
     let detail = ''
     try {
-      const err = await res.json()
+      const err = (await res.json()) as AnthropicResponse
       detail = err?.error?.message || ''
     } catch {
       /* negeer parse-fout */
     }
-    throw new Error(
-      `Recept ophalen mislukt (${res.status}). ${detail}`.trim()
-    )
+    throw new Error(`Recept ophalen mislukt (${res.status}). ${detail}`.trim())
   }
 
-  const data = await res.json()
+  const data = (await res.json()) as AnthropicResponse
   const text = (data.content || [])
     .filter((b) => b.type === 'text')
-    .map((b) => b.text)
+    .map((b) => b.text ?? '')
     .join('\n')
 
   return extractJson(text)

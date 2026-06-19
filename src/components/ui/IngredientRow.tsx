@@ -1,10 +1,21 @@
 import StoreBadges from './StoreBadges'
 import SaleBadge from './SaleBadge'
 import { isActiveSale } from '../../lib/dates'
+import type { Ingredient } from '../../types'
+
+interface IngredientRowProps {
+  ingredient: Ingredient
+  onList: boolean
+  onToggle: (ingredient: Ingredient) => void
+}
 
 // Eén rij in de ingrediëntenlijst (Browser). Grote aantikvlak: hele rij is een knop.
 // `onList` markeert dat het al op de winkellijst staat (sage groen randje).
-export default function IngredientRow({ ingredient, onList, onToggle }) {
+export default function IngredientRow({
+  ingredient,
+  onList,
+  onToggle,
+}: IngredientRowProps) {
   const activeSale = isActiveSale(ingredient)
 
   const classes = [

@@ -4,7 +4,7 @@ const STORAGE_KEY = 'mercato.userName'
 
 // Bewaart "wie ben jij?" in localStorage. Geen login nodig.
 export function useUserName() {
-  const [userName, setUserNameState] = useState(() => {
+  const [userName, setUserNameState] = useState<string>(() => {
     try {
       return localStorage.getItem(STORAGE_KEY) || ''
     } catch {
@@ -12,7 +12,7 @@ export function useUserName() {
     }
   })
 
-  const setUserName = (name) => {
+  const setUserName = (name: string) => {
     const trimmed = (name || '').trim()
     setUserNameState(trimmed)
     try {
@@ -25,7 +25,7 @@ export function useUserName() {
 
   // Sync tussen tabbladen.
   useEffect(() => {
-    const onStorage = (e) => {
+    const onStorage = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY) setUserNameState(e.newValue || '')
     }
     window.addEventListener('storage', onStorage)

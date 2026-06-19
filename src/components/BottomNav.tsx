@@ -1,12 +1,30 @@
-const TABS = [
+import type { ScreenId } from '../types'
+
+interface Tab {
+  id: ScreenId
+  icon: string
+  label: string
+}
+
+const TABS: Tab[] = [
   { id: 'list', icon: '🛒', label: 'Lijst' },
   { id: 'browse', icon: '📋', label: 'Ingrediënten' },
   { id: 'recipe', icon: '👨‍🍳', label: 'Recepten' },
   { id: 'admin', icon: '⚙️', label: 'Beheer' },
 ]
 
+interface BottomNavProps {
+  active: ScreenId
+  onChange: (id: ScreenId) => void
+  listCount?: number
+}
+
 // Onderste navigatiebalk (mobile-first). `listCount` toont een badge op de lijst.
-export default function BottomNav({ active, onChange, listCount = 0 }) {
+export default function BottomNav({
+  active,
+  onChange,
+  listCount = 0,
+}: BottomNavProps) {
   return (
     <nav className="bottom-nav">
       <div className="bottom-nav__inner">
