@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { Search, Tag } from 'lucide-react'
 import CategoryHeader from './ui/CategoryHeader'
 import IngredientRow from './ui/IngredientRow'
 import { isActiveSale } from '../lib/dates'
@@ -13,7 +14,6 @@ interface IngredientBrowserProps {
 
 interface Group {
   name: string
-  icon: string
   order: number
   items: Ingredient[]
 }
@@ -56,7 +56,6 @@ export default function IngredientBrowser({
       list.sort((a, b) => a.name.localeCompare(b.name, 'nl'))
       return {
         name,
-        icon: cat?.icon || '📦',
         order: cat?.order ?? 999,
         items: list,
       }
@@ -68,26 +67,36 @@ export default function IngredientBrowser({
   return (
     <div>
       <div className="toolbar">
-        <input
-          type="search"
-          className="search-input"
-          placeholder="Zoek een ingrediënt…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <div className="search-wrap">
+          <Search
+            className="search-wrap__icon"
+            size={17}
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+          <input
+            type="search"
+            className="search-input search-input--icon"
+            placeholder="Zoek een ingrediënt…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
         <button
           type="button"
           className="chip-toggle"
           aria-pressed={onlySales}
           onClick={() => setOnlySales((v) => !v)}
         >
-          🏷️ Alleen aanbiedingen
+          <Tag size={14} strokeWidth={1.75} /> Alleen aanbiedingen
         </button>
       </div>
 
       {groups.length === 0 ? (
         <div className="empty-state">
-          <span className="empty-state__emoji">🔍</span>
+          <span className="empty-state__icon" aria-hidden="true">
+            <Search size={40} strokeWidth={1.5} />
+          </span>
           <p>Geen ingrediënten gevonden.</p>
           {ingredients.length === 0 && (
             <p className="muted">
@@ -98,11 +107,7 @@ export default function IngredientBrowser({
       ) : (
         groups.map((group) => (
           <section key={group.name}>
-            <CategoryHeader
-              icon={group.icon}
-              name={group.name}
-              count={group.items.length}
-            />
+            <CategoryHeader name={group.name} count={group.items.length} />
             {group.items.map((ing) => (
               <IngredientRow
                 key={ing.id}

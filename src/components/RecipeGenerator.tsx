@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Sparkles, RefreshCw, Plus, Check } from 'lucide-react'
 import RecipeCard from './ui/RecipeCard'
 import { generateRecipe, isRecipeEnabled } from '../lib/recipe'
 import type { AddToListInput, Ingredient, Recipe, ShoppingItem } from '../types'
@@ -117,7 +118,9 @@ export default function RecipeGenerator({
               <span className="spinner" /> Even koken…
             </>
           ) : (
-            '👨‍🍳 Stel een recept voor'
+            <>
+              <Sparkles size={17} strokeWidth={1.75} /> Stel een recept voor
+            </>
           )}
         </button>
       )}
@@ -144,7 +147,9 @@ export default function RecipeGenerator({
                   <span className="spinner" /> Even koken…
                 </>
               ) : (
-                '🔄 Nieuw recept'
+                <>
+                  <RefreshCw size={16} strokeWidth={1.75} /> Nieuw recept
+                </>
               )}
             </button>
             <button
@@ -153,7 +158,15 @@ export default function RecipeGenerator({
               onClick={handleAddMissing}
               disabled={added}
             >
-              {added ? '✓ Toegevoegd' : '➕ Ontbrekende ingrediënten toevoegen'}
+              {added ? (
+                <>
+                  <Check size={16} strokeWidth={2} /> Toegevoegd
+                </>
+              ) : (
+                <>
+                  <Plus size={16} strokeWidth={2} /> Ontbrekende toevoegen
+                </>
+              )}
             </button>
           </div>
         </>

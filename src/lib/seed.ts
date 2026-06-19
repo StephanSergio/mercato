@@ -8,18 +8,20 @@ import { collection, getDocs, writeBatch, doc } from 'firebase/firestore'
 import { db, COLLECTIONS } from '../firebase'
 import type { Category, Ingredient } from '../types'
 
+// `icon` blijft leeg: het categorie-icoon wordt afgeleid van de naam
+// via src/lib/categoryIcon.tsx (Lucide), niet meer uit opgeslagen emoji.
 export const defaultCategories: Omit<Category, 'id'>[] = [
-  { name: 'Groente & Fruit', icon: '🥦', order: 1 },
-  { name: 'Vlees & Vis', icon: '🥩', order: 2 },
-  { name: 'Zuivel & Eieren', icon: '🧀', order: 3 },
-  { name: 'Brood & Bakkerij', icon: '🍞', order: 4 },
-  { name: 'Pasta, Rijst & Granen', icon: '🍝', order: 5 },
-  { name: 'Blikken & Potten', icon: '🥫', order: 6 },
-  { name: 'Sauzen & Kruiden', icon: '🌿', order: 7 },
-  { name: 'Diepvries', icon: '❄️', order: 8 },
-  { name: 'Dranken', icon: '🧃', order: 9 },
-  { name: 'Snacks & Tussendoor', icon: '🍫', order: 10 },
-  { name: 'Huishouden & Verzorging', icon: '🧴', order: 11 },
+  { name: 'Groente & Fruit', icon: '', order: 1 },
+  { name: 'Vlees & Vis', icon: '', order: 2 },
+  { name: 'Zuivel & Eieren', icon: '', order: 3 },
+  { name: 'Brood & Bakkerij', icon: '', order: 4 },
+  { name: 'Pasta, Rijst & Granen', icon: '', order: 5 },
+  { name: 'Blikken & Potten', icon: '', order: 6 },
+  { name: 'Sauzen & Kruiden', icon: '', order: 7 },
+  { name: 'Diepvries', icon: '', order: 8 },
+  { name: 'Dranken', icon: '', order: 9 },
+  { name: 'Snacks & Tussendoor', icon: '', order: 10 },
+  { name: 'Huishouden & Verzorging', icon: '', order: 11 },
 ]
 
 // Korte helper om saledatums leesbaar te houden in de seed.

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { Check, X, Trash2, ShoppingCart } from 'lucide-react'
 import CategoryHeader from './ui/CategoryHeader'
 import SaleBadge from './ui/SaleBadge'
 import { isActiveSale } from '../lib/dates'
@@ -15,7 +16,6 @@ interface ShoppingListProps {
 
 interface Group {
   name: string
-  icon: string
   order: number
   items: ShoppingItem[]
 }
@@ -64,7 +64,6 @@ export default function ShoppingList({
       })
       return {
         name,
-        icon: cat?.icon || '📦',
         order: cat?.order ?? 999,
         items: list,
       }
@@ -77,7 +76,9 @@ export default function ShoppingList({
   if (total === 0) {
     return (
       <div className="empty-state">
-        <span className="empty-state__emoji">🛒</span>
+        <span className="empty-state__icon" aria-hidden="true">
+          <ShoppingCart size={40} strokeWidth={1.5} />
+        </span>
         <p>Je winkellijst is nog leeg.</p>
         <p className="muted">
           Ga naar <strong>Ingrediënten</strong> en tik items aan om ze toe te
@@ -90,8 +91,11 @@ export default function ShoppingList({
   return (
     <div>
       <div className="progress">
-        <div className="progress__label">
-          {done} van {total} items gedaan
+        <div className="progress__head">
+          <span className="progress__label">Afgevinkt</span>
+          <span className="progress__count">
+            {done} / {total}
+          </span>
         </div>
         <div className="progress__bar">
           <div
@@ -103,11 +107,7 @@ export default function ShoppingList({
 
       {groups.map((group) => (
         <section key={group.name}>
-          <CategoryHeader
-            icon={group.icon}
-            name={group.name}
-            count={group.items.length}
-          />
+          <CategoryHeader name={group.name} count={group.items.length} />
           {group.items.map((item) => {
             const ing = ingredientById.get(item.ingredientId)
             const showSale = ing && isActiveSale(ing)
@@ -130,10 +130,18 @@ export default function ShoppingList({
                     }`}
                     aria-hidden="true"
                   >
-                    {item.checked ? '✓' : ''}
+                    {item.checked && <Check size={16} strokeWidth={3} />}
                   </span>
                   <span className="check-row__body">
-                    <span className="check-row__name">{item.name}</span>
+                    <span className="leader">
+                      <span className="leader__name check-row__name">
+                        {item.name}
+                      </span>
+                      <span className="leader__dots" aria-hidden="true" />
+                      {ing?.unit && (
+                        <span className="leader__num">{ing.unit}</span>
+                      )}
+                    </span>
                     <span className="check-row__meta">
                       {item.addedBy && (
                         <span className="check-row__added-by">
@@ -150,7 +158,7 @@ export default function ShoppingList({
                   onClick={() => onRemove(item.id)}
                   aria-label="Verwijder van lijst"
                 >
-                  ×
+                  <X size={18} strokeWidth={2} />
                 </button>
               </div>
             )
@@ -165,7 +173,8 @@ export default function ShoppingList({
           style={{ marginTop: 20 }}
           onClick={onClearChecked}
         >
-          🧹 Aangevinkte items verwijderen ({done})
+          <Trash2 size={16} strokeWidth={1.75} /> Aangevinkte items verwijderen (
+          {done})
         </button>
       )}
     </div>

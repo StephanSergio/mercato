@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { User } from 'lucide-react'
 import BottomNav from './components/BottomNav'
 import ShoppingList from './components/ShoppingList'
 import IngredientBrowser from './components/IngredientBrowser'
@@ -83,7 +84,8 @@ export default function App() {
           className="app-header__name-pill"
           onClick={() => setShowNameModal(true)}
         >
-          👤 {hasName ? userName : 'Wie ben jij?'}
+          <User size={14} strokeWidth={1.75} />
+          {hasName ? userName : 'Wie ben jij?'}
         </button>
       </header>
 

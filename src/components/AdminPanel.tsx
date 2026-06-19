@@ -1,6 +1,18 @@
 import { useState } from 'react'
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  Check,
+  X,
+  ChevronUp,
+  ChevronDown,
+  Sprout,
+  Tag,
+} from 'lucide-react'
 import StoreBadges from './ui/StoreBadges'
 import SaleBadge from './ui/SaleBadge'
+import CategoryIcon from '../lib/categoryIcon'
 import { isSaleExpired, formatShortDate } from '../lib/dates'
 import { seedDatabase } from '../lib/seed'
 import type {
@@ -112,7 +124,9 @@ function IngredientForm({
               aria-pressed={form.store.includes(store)}
               onClick={() => toggleStore(store)}
             >
-              {form.store.includes(store) ? '✓ ' : ''}
+              {form.store.includes(store) && (
+                <Check size={13} strokeWidth={2.5} />
+              )}
               {store}
             </button>
           ))}
@@ -229,7 +243,7 @@ function IngredientsTab({
             setShowForm(true)
           }}
         >
-          + Nieuw ingrediënt
+          <Plus size={16} strokeWidth={2} /> Nieuw ingrediënt
         </button>
       )}
 
@@ -272,7 +286,7 @@ function IngredientsTab({
                 setShowForm(true)
               }}
             >
-              ✏️
+              <Pencil size={15} strokeWidth={1.75} />
             </button>
             <button
               type="button"
@@ -283,7 +297,7 @@ function IngredientsTab({
                   actions.removeIngredient(ing.id)
               }}
             >
-              🗑️
+              <Trash2 size={15} strokeWidth={1.75} />
             </button>
           </div>
         </div>
@@ -304,7 +318,9 @@ function SalesTab({ ingredients, actions }: SalesTabProps) {
   if (sales.length === 0) {
     return (
       <div className="empty-state">
-        <span className="empty-state__emoji">🏷️</span>
+        <span className="empty-state__icon" aria-hidden="true">
+          <Tag size={40} strokeWidth={1.5} />
+        </span>
         <p>Geen aanbiedingen ingesteld.</p>
         <p className="muted">
           Zet een ingrediënt op aanbieding bij het tabblad Ingrediënten.
@@ -365,19 +381,14 @@ interface CategoriesTabProps {
 
 function CategoriesTab({ categories, actions }: CategoriesTabProps) {
   const [newName, setNewName] = useState('')
-  const [newIcon, setNewIcon] = useState('')
 
   function addNew(e: React.FormEvent) {
     e.preventDefault()
     if (!newName.trim()) return
     const maxOrder = categories.reduce((m, c) => Math.max(m, c.order || 0), 0)
-    actions.addCategory({
-      name: newName.trim(),
-      icon: newIcon.trim() || '📦',
-      order: maxOrder + 1,
-    })
+    // Icoon wordt afgeleid van de naam (zie categoryIcon.tsx); geen emoji-veld.
+    actions.addCategory({ name: newName.trim(), icon: '', order: maxOrder + 1 })
     setNewName('')
-    setNewIcon('')
   }
 
   // Wisselt de volgorde van twee categorieën om.
@@ -395,28 +406,16 @@ function CategoriesTab({ categories, actions }: CategoriesTabProps) {
       <form className="form-card" onSubmit={addNew}>
         <div className="field">
           <label className="field__label">Nieuwe categorie</label>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <input
-              className="field__input"
-              style={{ width: 64, textAlign: 'center' }}
-              value={newIcon}
-              onChange={(e) => setNewIcon(e.target.value)}
-              placeholder="🥦"
-              maxLength={2}
-              aria-label="Emoji"
-            />
-            <input
-              className="field__input"
-              style={{ flex: 1 }}
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              placeholder="Naam"
-              aria-label="Categorienaam"
-            />
-          </div>
+          <input
+            className="field__input"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            placeholder="Naam van de categorie"
+            aria-label="Categorienaam"
+          />
         </div>
         <button type="submit" className="btn btn--primary">
-          + Toevoegen
+          <Plus size={16} strokeWidth={2} /> Toevoegen
         </button>
       </form>
 
@@ -443,7 +442,7 @@ interface CategoryRowProps {
   isFirst: boolean
   isLast: boolean
   onMove: (dir: number) => void
-  onSave: (data: { name: string; icon: string }) => void
+  onSave: (data: { name: string }) => void
   onRemove: () => void
 }
 
@@ -457,23 +456,19 @@ function CategoryRow({
 }: CategoryRowProps) {
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(cat.name)
-  const [icon, setIcon] = useState(cat.icon)
 
   if (editing) {
     return (
       <div className="admin-row">
-        <input
-          className="field__input"
-          style={{ width: 56, textAlign: 'center' }}
-          value={icon}
-          onChange={(e) => setIcon(e.target.value)}
-          maxLength={2}
-        />
+        <span className="admin-row__cat-icon" aria-hidden="true">
+          <CategoryIcon name={name} size={18} />
+        </span>
         <input
           className="field__input"
           style={{ flex: 1 }}
           value={name}
           onChange={(e) => setName(e.target.value)}
+          aria-label="Categorienaam"
         />
         <div className="admin-row__actions">
           <button
@@ -481,14 +476,11 @@ function CategoryRow({
             className="icon-btn"
             aria-label="Opslaan"
             onClick={() => {
-              onSave({
-                name: name.trim() || cat.name,
-                icon: icon.trim() || '📦',
-              })
+              onSave({ name: name.trim() || cat.name })
               setEditing(false)
             }}
           >
-            ✓
+            <Check size={15} strokeWidth={2} />
           </button>
           <button
             type="button"
@@ -496,11 +488,10 @@ function CategoryRow({
             aria-label="Annuleren"
             onClick={() => {
               setName(cat.name)
-              setIcon(cat.icon)
               setEditing(false)
             }}
           >
-            ×
+            <X size={15} strokeWidth={2} />
           </button>
         </div>
       </div>
@@ -509,10 +500,11 @@ function CategoryRow({
 
   return (
     <div className="admin-row">
+      <span className="admin-row__cat-icon" aria-hidden="true">
+        <CategoryIcon name={cat.name} size={18} />
+      </span>
       <div className="admin-row__body">
-        <div className="admin-row__name">
-          {cat.icon} {cat.name}
-        </div>
+        <div className="admin-row__name">{cat.name}</div>
       </div>
       <div className="admin-row__actions">
         <button
@@ -522,7 +514,7 @@ function CategoryRow({
           disabled={isFirst}
           onClick={() => onMove(-1)}
         >
-          ↑
+          <ChevronUp size={16} strokeWidth={1.75} />
         </button>
         <button
           type="button"
@@ -531,7 +523,7 @@ function CategoryRow({
           disabled={isLast}
           onClick={() => onMove(1)}
         >
-          ↓
+          <ChevronDown size={16} strokeWidth={1.75} />
         </button>
         <button
           type="button"
@@ -539,7 +531,7 @@ function CategoryRow({
           aria-label="Bewerken"
           onClick={() => setEditing(true)}
         >
-          ✏️
+          <Pencil size={15} strokeWidth={1.75} />
         </button>
         <button
           type="button"
@@ -547,7 +539,7 @@ function CategoryRow({
           aria-label="Verwijderen"
           onClick={onRemove}
         >
-          🗑️
+          <Trash2 size={15} strokeWidth={1.75} />
         </button>
       </div>
     </div>
@@ -604,7 +596,13 @@ export default function AdminPanel({
             onClick={handleSeed}
             disabled={seeding}
           >
-            {seeding ? 'Bezig…' : '🌱 Database vullen'}
+            {seeding ? (
+              'Bezig…'
+            ) : (
+              <>
+                <Sprout size={15} strokeWidth={1.75} /> Database vullen
+              </>
+            )}
           </button>
           {seedMsg && <p style={{ marginTop: 8 }}>{seedMsg}</p>}
         </div>

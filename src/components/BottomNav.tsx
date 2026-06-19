@@ -1,16 +1,23 @@
+import {
+  ShoppingCart,
+  List,
+  ChefHat,
+  SlidersHorizontal,
+  type LucideIcon,
+} from 'lucide-react'
 import type { ScreenId } from '../types'
 
 interface Tab {
   id: ScreenId
-  icon: string
+  icon: LucideIcon
   label: string
 }
 
 const TABS: Tab[] = [
-  { id: 'list', icon: '🛒', label: 'Lijst' },
-  { id: 'browse', icon: '📋', label: 'Ingrediënten' },
-  { id: 'recipe', icon: '👨‍🍳', label: 'Recepten' },
-  { id: 'admin', icon: '⚙️', label: 'Beheer' },
+  { id: 'list', icon: ShoppingCart, label: 'Lijst' },
+  { id: 'browse', icon: List, label: 'Ingrediënten' },
+  { id: 'recipe', icon: ChefHat, label: 'Recepten' },
+  { id: 'admin', icon: SlidersHorizontal, label: 'Beheer' },
 ]
 
 interface BottomNavProps {
@@ -28,23 +35,27 @@ export default function BottomNav({
   return (
     <nav className="bottom-nav">
       <div className="bottom-nav__inner">
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            className={`nav-btn${active === tab.id ? ' nav-btn--active' : ''}`}
-            onClick={() => onChange(tab.id)}
-            aria-current={active === tab.id ? 'page' : undefined}
-          >
-            <span className="nav-btn__icon" aria-hidden="true">
-              {tab.icon}
-              {tab.id === 'list' && listCount > 0 && (
-                <span className="nav-btn__badge">{listCount}</span>
-              )}
-            </span>
-            {tab.label}
-          </button>
-        ))}
+        {TABS.map((tab) => {
+          const Icon = tab.icon
+          const isActive = active === tab.id
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              className={`nav-btn${isActive ? ' nav-btn--active' : ''}`}
+              onClick={() => onChange(tab.id)}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              <span className="nav-btn__icon">
+                <Icon size={22} strokeWidth={isActive ? 2 : 1.6} />
+                {tab.id === 'list' && listCount > 0 && (
+                  <span className="nav-btn__badge">{listCount}</span>
+                )}
+              </span>
+              {tab.label}
+            </button>
+          )
+        })}
       </div>
     </nav>
   )
