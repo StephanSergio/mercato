@@ -1,47 +1,70 @@
 /* ============================================================
    Mercato — globals.css
-   Design tokens + reset for "Warm Editorial Food"
+   Design tokens + reset
+   Direction: Editorial Chic · Refined · Lush · Elegant
    ============================================================ */
 
 :root {
-  /* Colors */
-  --color-cream: #faf7f2;
-  --color-warm-white: #ffffff;
-  --color-ink: #1c1c1a;
-  --color-muted: #6b6560;
-  --color-sage: #7a8c6e;
-  --color-sage-soft: #eef1ea;
-  --color-terracotta: #c4622d;
-  --color-terracotta-dark: #a9521f;
-  --color-sand: #e8e0d4;
-  --color-highlight: #fff3e0;
-  --color-danger: #b03a2e;
+  /* ── Palette ── */
+  --c-parchment:    #F5F2ED;   /* Page background — warm stone paper       */
+  --c-surface:      #FFFFFF;   /* Cards, rows                              */
+  --c-ink:          #1C1917;   /* Primary text — deep warm black            */
+  --c-stone:        #94908A;   /* Secondary text, captions                  */
+  --c-olive:        #6B7A5E;   /* "On list" / success — refined sage        */
+  --c-olive-soft:   #E8ECE2;   /* Soft olive wash for chips/backgrounds     */
+  --c-night:        #1E2A3A;   /* Primary CTA — deep night-blue             */
+  --c-night-hover:  #162230;   /* Night hover                               */
+  --c-copper:       #B5845A;   /* Signature warm accent — editorial copper   */
+  --c-copper-soft:  #F3EAE0;   /* Soft copper wash                          */
+  --c-sand:         #DDD8D0;   /* Borders, dividers                         */
+  --c-highlight:    #FEF7EF;   /* Sale/promo background                     */
+  --c-danger:       #8B3A2F;   /* Destructive                               */
 
-  /* Store accents */
-  --store-ah: #1f4ba3;
-  --store-lidl: #0050aa;
-  --store-deka: #d6203a;
+  /* Store brand colours (fixed) */
+  --store-ah:       #1F4BA3;
+  --store-lidl:     #0050AA;
+  --store-deka:     #D6203A;
 
-  /* Typography */
-  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    sans-serif;
+  /* ── Typography ── */
+  --font-display: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
+  --font-body:    'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+                   Roboto, sans-serif;
 
-  /* Radii */
-  --radius-card: 12px;
-  --radius-button: 8px;
-  --radius-pill: 999px;
+  /* Type scale */
+  --text-display:   32px;   /* Screen titles                              */
+  --text-heading:   22px;   /* Section headings                           */
+  --text-sub:       18px;   /* Category labels                            */
+  --text-body:      15px;   /* List items, paragraphs                     */
+  --text-caption:   13px;   /* Subtexts, metadata                         */
+  --text-label:     13px;   /* Buttons, badges                            */
+  --text-overline:  11px;   /* Uppercase micro-labels                     */
 
-  /* Spacing helpers */
-  --touch-target: 44px;
-  --bottom-nav-height: 68px;
-  --max-width: 720px;
+  /* ── Spacing (8pt grid) ── */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  24px;
+  --sp-6:  32px;
+  --sp-7:  48px;
 
-  /* Shadow (only on modals) */
-  --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.08);
+  /* ── Shape ── */
+  --radius-card:    3px;    /* Sharp, couture, precise                    */
+  --radius-button:  3px;
+  --radius-pill:    999px;  /* Only pills/badges                          */
+
+  /* ── Layout ── */
+  --touch-target:      44px;
+  --bottom-nav-height: 64px;
+  --max-width:         720px;
+
+  /* ── Shadows ── */
+  --shadow-card:   0 1px 3px rgba(28, 25, 23, 0.04);
+  --shadow-modal:  0 24px 48px rgba(28, 25, 23, 0.14),
+                   0 4px 12px rgba(28, 25, 23, 0.06);
 }
 
-/* ---------- Reset ---------- */
+/* ── Reset ── */
 *,
 *::before,
 *::after {
@@ -56,12 +79,13 @@ html {
 
 body {
   font-family: var(--font-body);
-  background: var(--color-cream);
-  color: var(--color-ink);
-  line-height: 1.45;
+  font-size: var(--text-body);
+  background: var(--c-parchment);
+  color: var(--c-ink);
+  line-height: 1.5;
+  letter-spacing: 0.005em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Prevent rubber-band white flash on iOS */
   overscroll-behavior-y: none;
 }
 
@@ -83,8 +107,8 @@ input,
 select,
 textarea {
   font-family: inherit;
-  font-size: 16px; /* prevents iOS zoom-on-focus */
-  color: var(--color-ink);
+  font-size: 16px; /* prevents iOS zoom */
+  color: var(--c-ink);
 }
 
 ul,
@@ -102,10 +126,14 @@ h4 {
 }
 
 a {
-  color: var(--color-terracotta);
+  color: var(--c-copper);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 
-/* Respect users who prefer reduced motion */
+/* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
