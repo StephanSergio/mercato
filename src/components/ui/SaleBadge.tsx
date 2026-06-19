@@ -1,7 +1,19 @@
 import { isSaleExpired, formatShortDate } from '../../lib/dates'
+import type { Ingredient } from '../../types'
+
+interface SaleBadgeProps {
+  ingredient: Pick<
+    Ingredient,
+    'onSale' | 'saleStore' | 'saleLabel' | 'saleUntil'
+  >
+  showDate?: boolean
+}
 
 // Aanbiedings-badge. Verlopen aanbiedingen worden uitgetint getoond.
-export default function SaleBadge({ ingredient, showDate = false }) {
+export default function SaleBadge({
+  ingredient,
+  showDate = false,
+}: SaleBadgeProps) {
   if (!ingredient?.onSale) return null
 
   const expired = isSaleExpired(ingredient.saleUntil)

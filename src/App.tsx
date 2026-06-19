@@ -10,8 +10,9 @@ import { useIngredients } from './hooks/useIngredients'
 import { useCategories } from './hooks/useCategories'
 import { useUserName } from './hooks/useUserName'
 import { isFirebaseConfigured } from './firebase'
+import type { AddToListInput, Ingredient, ScreenId } from './types'
 
-const SCREEN_TITLES = {
+const SCREEN_TITLES: Record<ScreenId, { title: string; subtitle: string }> = {
   list: { title: 'Winkellijst', subtitle: 'Samen boodschappen doen' },
   browse: { title: 'Ingrediënten', subtitle: 'Tik aan om toe te voegen' },
   recipe: { title: 'Recepten', subtitle: 'Laat de kok iets voorstellen' },
@@ -19,7 +20,7 @@ const SCREEN_TITLES = {
 }
 
 export default function App() {
-  const [screen, setScreen] = useState('list')
+  const [screen, setScreen] = useState<ScreenId>('list')
   const [showNameModal, setShowNameModal] = useState(false)
 
   const { userName, setUserName, hasName } = useUserName()
@@ -34,7 +35,7 @@ export default function App() {
   )
 
   // Toggle vanuit de Browser: toevoegen of verwijderen.
-  function toggleIngredient(ingredient) {
+  function toggleIngredient(ingredient: Ingredient) {
     if (!hasName) {
       setShowNameModal(true)
       return
@@ -47,7 +48,7 @@ export default function App() {
   }
 
   // Toevoegen vanuit het receptenscherm (ontbrekende ingrediënten).
-  function addToList(ingredientLike) {
+  function addToList(ingredientLike: AddToListInput) {
     shopping.addItem(ingredientLike, userName || 'Recept')
   }
 

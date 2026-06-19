@@ -3,10 +3,19 @@ import StoreBadges from './ui/StoreBadges'
 import SaleBadge from './ui/SaleBadge'
 import { isSaleExpired, formatShortDate } from '../lib/dates'
 import { seedDatabase } from '../lib/seed'
+import type {
+  Category,
+  CategoryActions,
+  Ingredient,
+  IngredientActions,
+  StoreName,
+} from '../types'
 
-const STORES = ['AH', 'Lidl', 'Deka']
+const STORES: StoreName[] = ['AH', 'Lidl', 'Deka']
 
-const emptyForm = {
+type IngredientFormState = Omit<Ingredient, 'id'>
+
+const emptyForm: IngredientFormState = {
   name: '',
   category: '',
   store: [],
@@ -18,11 +27,29 @@ const emptyForm = {
 }
 
 // ---------- Ingrediënt-formulier (toevoegen / bewerken) ----------
-function IngredientForm({ initial, categories, onSave, onCancel }) {
-  const [form, setForm] = useState(initial || emptyForm)
+interface IngredientFormProps {
+  initial: IngredientFormState | null
+  categories: Category[]
+  onSave: (data: Omit<Ingredient, 'id'>) => void
+  onCancel: () => void
+}
 
-  const set = (key, value) => setForm((f) => ({ ...f, [key]: value }))
-  const toggleStore = (store) =>
+function IngredientForm({
+  initial,
+  categories,
+  onSave,
+  onCancel,
+}: IngredientFormProps) {
+  const [form, setForm] = useState<IngredientFormState>(initial || emptyForm)
+
+  function set<K extends keyof IngredientFormState>(
+    key: K,
+    value: IngredientFormState[K]
+  ) {
+    setForm((f) => ({ ...f, [key]: value }))
+  }
+
+  const toggleStore = (store: StoreName) =>
     setForm((f) => ({
       ...f,
       store: f.store.includes(store)
@@ -30,7 +57,7 @@ function IngredientForm({ initial, categories, onSave, onCancel }) {
         : [...f.store, store],
     }))
 
-  function submit(e) {
+  function submit(e: React.FormEvent) {
     e.preventDefault()
     if (!form.name.trim() || !form.category) return
     onSave({
@@ -167,12 +194,24 @@ function IngredientForm({ initial, categories, onSave, onCancel }) {
 }
 
 // ---------- Tab: Ingrediënten beheren ----------
-function IngredientsTab({ ingredients, categories, actions }) {
-  const [showForm, setShowForm] = useState(false)
-  const [editing, setEditing] = useState(null)
+interface IngredientsTabProps {
+  ingredients: Ingredient[]
+  categories: Category[]
+  actions: IngredientActions
+}
 
-  function handleSave(data) {
-    if (editing) actions.updateIngredient(editing.id, data)
+function IngredientsTab({
+  ingredients,
+  categories,
+  actions,
+}: IngredientsTabProps) {
+  const [showForm, setShowForm] = useState(false)
+  const [editing, setEditing] = useState<
+    (IngredientFormState & { editId?: string }) | null
+  >(null)
+
+  function handleSave(data: Omit<Ingredient, 'id'>) {
+    if (editing?.editId) actions.updateIngredient(editing.editId, data)
     else actions.addIngredient(data)
     setShowForm(false)
     setEditing(null)
@@ -228,6 +267,7 @@ function IngredientsTab({ ingredients, categories, actions }) {
                   ...ing,
                   store: ing.store || [],
                   saleStore: ing.saleStore || 'AH',
+                  editId: ing.id,
                 })
                 setShowForm(true)
               }}
@@ -253,7 +293,12 @@ function IngredientsTab({ ingredients, categories, actions }) {
 }
 
 // ---------- Tab: Aanbiedingen ----------
-function SalesTab({ ingredients, actions }) {
+interface SalesTabProps {
+  ingredients: Ingredient[]
+  actions: IngredientActions
+}
+
+function SalesTab({ ingredients, actions }: SalesTabProps) {
   const sales = ingredients.filter((i) => i.onSale)
 
   if (sales.length === 0) {
@@ -298,7 +343,9 @@ function SalesTab({ ingredients, actions }) {
                 role="switch"
                 aria-checked={ing.onSale}
                 aria-label="Aanbieding aan/uit"
-                onClick={() => actions.updateIngredient(ing.id, { onSale: false })}
+                onClick={() =>
+                  actions.updateIngredient(ing.id, { onSale: false })
+                }
               >
                 <span className="switch__knob" />
               </button>
@@ -311,11 +358,16 @@ function SalesTab({ ingredients, actions }) {
 }
 
 // ---------- Tab: Categorieën beheren ----------
-function CategoriesTab({ categories, actions }) {
+interface CategoriesTabProps {
+  categories: Category[]
+  actions: CategoryActions
+}
+
+function CategoriesTab({ categories, actions }: CategoriesTabProps) {
   const [newName, setNewName] = useState('')
   const [newIcon, setNewIcon] = useState('')
 
-  function addNew(e) {
+  function addNew(e: React.FormEvent) {
     e.preventDefault()
     if (!newName.trim()) return
     const maxOrder = categories.reduce((m, c) => Math.max(m, c.order || 0), 0)
@@ -329,7 +381,7 @@ function CategoriesTab({ categories, actions }) {
   }
 
   // Wisselt de volgorde van twee categorieën om.
-  function move(index, dir) {
+  function move(index: number, dir: number) {
     const target = index + dir
     if (target < 0 || target >= categories.length) return
     const a = categories[index]
@@ -386,7 +438,23 @@ function CategoriesTab({ categories, actions }) {
   )
 }
 
-function CategoryRow({ cat, isFirst, isLast, onMove, onSave, onRemove }) {
+interface CategoryRowProps {
+  cat: Category
+  isFirst: boolean
+  isLast: boolean
+  onMove: (dir: number) => void
+  onSave: (data: { name: string; icon: string }) => void
+  onRemove: () => void
+}
+
+function CategoryRow({
+  cat,
+  isFirst,
+  isLast,
+  onMove,
+  onSave,
+  onRemove,
+}: CategoryRowProps) {
   const [editing, setEditing] = useState(false)
   const [name, setName] = useState(cat.name)
   const [icon, setIcon] = useState(cat.icon)
@@ -413,7 +481,10 @@ function CategoryRow({ cat, isFirst, isLast, onMove, onSave, onRemove }) {
             className="icon-btn"
             aria-label="Opslaan"
             onClick={() => {
-              onSave({ name: name.trim() || cat.name, icon: icon.trim() || '📦' })
+              onSave({
+                name: name.trim() || cat.name,
+                icon: icon.trim() || '📦',
+              })
               setEditing(false)
             }}
           >
@@ -484,13 +555,22 @@ function CategoryRow({ cat, isFirst, isLast, onMove, onSave, onRemove }) {
 }
 
 // ---------- Hoofd AdminPanel ----------
+type AdminTab = 'ingredients' | 'sales' | 'categories'
+
+interface AdminPanelProps {
+  ingredients: Ingredient[]
+  categories: Category[]
+  ingredientActions: IngredientActions
+  categoryActions: CategoryActions
+}
+
 export default function AdminPanel({
   ingredients,
   categories,
   ingredientActions,
   categoryActions,
-}) {
-  const [tab, setTab] = useState('ingredients')
+}: AdminPanelProps) {
+  const [tab, setTab] = useState<AdminTab>('ingredients')
   const [seedMsg, setSeedMsg] = useState('')
   const [seeding, setSeeding] = useState(false)
 
@@ -503,7 +583,7 @@ export default function AdminPanel({
       const res = await seedDatabase()
       setSeedMsg(res.message)
     } catch (e) {
-      setSeedMsg('Vullen mislukt: ' + (e.message || e))
+      setSeedMsg('Vullen mislukt: ' + (e instanceof Error ? e.message : e))
     } finally {
       setSeeding(false)
     }

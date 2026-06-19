@@ -1,5 +1,11 @@
+import type { Recipe } from '../../types'
+
+interface RecipeCardProps {
+  recipe: Recipe | null
+}
+
 // Het gegenereerde recept als mooi opgemaakt kaartje.
-export default function RecipeCard({ recipe }) {
+export default function RecipeCard({ recipe }: RecipeCardProps) {
   if (!recipe) return null
 
   const {

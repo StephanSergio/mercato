@@ -2,6 +2,23 @@ import { useMemo } from 'react'
 import CategoryHeader from './ui/CategoryHeader'
 import SaleBadge from './ui/SaleBadge'
 import { isActiveSale } from '../lib/dates'
+import type { Category, Ingredient, ShoppingItem } from '../types'
+
+interface ShoppingListProps {
+  items: ShoppingItem[]
+  categories: Category[]
+  ingredients: Ingredient[]
+  onToggle: (item: ShoppingItem) => void
+  onRemove: (id: string) => void
+  onClearChecked: () => void
+}
+
+interface Group {
+  name: string
+  icon: string
+  order: number
+  items: ShoppingItem[]
+}
 
 // Winkellijst (QuickView). Items gegroepeerd per categorie in vaste volgorde.
 // Aangevinkte items zakken naar onderen binnen hun categorie.
@@ -12,10 +29,10 @@ export default function ShoppingList({
   onToggle,
   onRemove,
   onClearChecked,
-}) {
+}: ShoppingListProps) {
   // Map ingredientId -> ingredient (voor actuele aanbiedingsinfo).
   const ingredientById = useMemo(() => {
-    const m = new Map()
+    const m = new Map<string, Ingredient>()
     ingredients.forEach((ing) => m.set(ing.id, ing))
     return m
   }, [ingredients])
@@ -25,21 +42,21 @@ export default function ShoppingList({
 
   // Volgorde van categorieën op basis van `order`.
   const categoryOrder = useMemo(() => {
-    const m = new Map()
+    const m = new Map<string, Category>()
     categories.forEach((c) => m.set(c.name, c))
     return m
   }, [categories])
 
   // Groepeer per categorie, sorteer groepen op order, items: open eerst.
-  const groups = useMemo(() => {
-    const byCat = new Map()
+  const groups = useMemo<Group[]>(() => {
+    const byCat = new Map<string, ShoppingItem[]>()
     items.forEach((item) => {
       const key = item.category || 'Overig'
       if (!byCat.has(key)) byCat.set(key, [])
-      byCat.get(key).push(item)
+      byCat.get(key)!.push(item)
     })
 
-    const arr = [...byCat.entries()].map(([name, list]) => {
+    const arr: Group[] = [...byCat.entries()].map(([name, list]) => {
       const cat = categoryOrder.get(name)
       list.sort((a, b) => {
         if (a.checked !== b.checked) return a.checked ? 1 : -1
@@ -123,7 +140,7 @@ export default function ShoppingList({
                           door {item.addedBy}
                         </span>
                       )}
-                      {showSale && <SaleBadge ingredient={ing} />}
+                      {showSale && ing && <SaleBadge ingredient={ing} />}
                     </span>
                   </span>
                 </button>

@@ -1,12 +1,19 @@
 import { useState } from 'react'
 import RecipeCard from './ui/RecipeCard'
 import { generateRecipe, isRecipeEnabled } from '../lib/recipe'
+import type { AddToListInput, Ingredient, Recipe, ShoppingItem } from '../types'
+
+interface RecipeGeneratorProps {
+  shoppingItems: ShoppingItem[]
+  ingredients: Ingredient[]
+  onAddToList: (item: AddToListInput) => void
+}
 
 // Normaliseert een naam voor losse matching.
-const norm = (s) => (s || '').toLowerCase().trim()
+const norm = (s: string) => (s || '').toLowerCase().trim()
 
 // Bepaalt of een recept-ingrediënt al (ongeveer) op de lijst staat.
-function alreadyOnList(recipeName, listNames) {
+function alreadyOnList(recipeName: string, listNames: string[]): boolean {
   const r = norm(recipeName)
   return listNames.some((n) => r.includes(n) || n.includes(r))
 }
@@ -15,8 +22,8 @@ export default function RecipeGenerator({
   shoppingItems,
   ingredients,
   onAddToList,
-}) {
-  const [recipe, setRecipe] = useState(null)
+}: RecipeGeneratorProps) {
+  const [recipe, setRecipe] = useState<Recipe | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [added, setAdded] = useState(false)
@@ -32,7 +39,7 @@ export default function RecipeGenerator({
       const result = await generateRecipe(listNames)
       setRecipe(result)
     } catch (e) {
-      setError(e.message || 'Er ging iets mis.')
+      setError(e instanceof Error ? e.message : 'Er ging iets mis.')
       setRecipe(null)
     } finally {
       setLoading(false)
@@ -68,8 +75,8 @@ export default function RecipeGenerator({
       <div className="banner banner--warn">
         <div className="banner__title">Receptenfunctie staat uit</div>
         Stel een Anthropic API-sleutel in via <code>VITE_ANTHROPIC_API_KEY</code>{' '}
-        om recepten te laten voorstellen. Zie de README voor uitleg (en de
-        veiligere proxy-variant).
+        (of een proxy via <code>VITE_RECIPE_PROXY_URL</code>) om recepten te
+        laten voorstellen. Zie de README voor uitleg.
       </div>
     )
   }
@@ -86,9 +93,7 @@ export default function RecipeGenerator({
           Op je lijst ({listNames.length})
         </div>
         {listNames.length === 0 ? (
-          <p className="muted">
-            Je lijst is leeg. Voeg eerst ingrediënten toe.
-          </p>
+          <p className="muted">Je lijst is leeg. Voeg eerst ingrediënten toe.</p>
         ) : (
           <div className="recipe-source__list">
             {listNames.map((name, i) => (

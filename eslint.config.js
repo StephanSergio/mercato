@@ -2,21 +2,23 @@ import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
-import { defineConfig, globalIgnores } from 'eslint/config'
+import tseslint from 'typescript-eslint'
+import { globalIgnores } from 'eslint/config'
 
-export default defineConfig([
-  // `functions/` is een Node/CommonJS Cloud Function met eigen runtime.
+export default tseslint.config([
+  // `dist` = build output, `functions` = Node/CommonJS Cloud Function (eigen runtime).
   globalIgnores(['dist', 'functions']),
   {
-    files: ['**/*.{js,jsx}'],
+    files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
+      tseslint.configs.recommended,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
     ],
     languageOptions: {
+      ecmaVersion: 2022,
       globals: globals.browser,
-      parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
 ])

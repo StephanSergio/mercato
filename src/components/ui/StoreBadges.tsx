@@ -1,5 +1,11 @@
+import type { StoreName } from '../../types'
+
+interface StoreBadgesProps {
+  stores: StoreName[] | undefined
+}
+
 // Kleine gekleurde tekst-badges per winkel: AH (blauw), Lidl (blauw/geel), Deka (rood).
-export default function StoreBadges({ stores }) {
+export default function StoreBadges({ stores }: StoreBadgesProps) {
   if (!stores || !stores.length) return null
   return (
     <span className="store-badges">

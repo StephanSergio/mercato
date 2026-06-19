@@ -159,36 +159,43 @@ Er is een GitHub Actions workflow (`.github/workflows/deploy.yml`).
 
 ## Projectstructuur
 
+De app is geschreven in **TypeScript** (React + Vite).
+
 ```
 src/
-  App.jsx                  routing (state) + shell
-  firebase.js              Firebase config + exports
+  main.tsx                 entry
+  App.tsx                  routing (state) + shell
+  firebase.ts              Firebase config + exports
+  types.ts                 gedeelde domeintypes (Ingredient, Category, …)
+  vite-env.d.ts            types voor import.meta.env (VITE_*)
   components/
-    BottomNav.jsx          navigatiebalk onderaan
-    ShoppingList.jsx        winkellijst (realtime)
-    IngredientBrowser.jsx   ingrediënten bladeren
-    AdminPanel.jsx          CRUD: ingrediënten / aanbiedingen / categorieën
-    RecipeGenerator.jsx     Claude-recept
-    NameModal.jsx           "wie ben jij?"
+    BottomNav.tsx          navigatiebalk onderaan
+    ShoppingList.tsx        winkellijst (realtime)
+    IngredientBrowser.tsx   ingrediënten bladeren
+    AdminPanel.tsx          CRUD: ingrediënten / aanbiedingen / categorieën
+    RecipeGenerator.tsx     Claude-recept
+    NameModal.tsx           "wie ben jij?"
     ui/                     SaleBadge, CategoryHeader, IngredientRow,
                             RecipeCard, StoreBadges
   hooks/
-    useShoppingList.js  useIngredients.js  useCategories.js  useUserName.js
+    useShoppingList.ts  useIngredients.ts  useCategories.ts  useUserName.ts
   lib/
-    recipe.js            Claude API-aanroep
-    seed.js              startdata + vul-functie
-    dates.js             aanbiedings-datumhelpers
+    recipe.ts            Claude API-aanroep
+    seed.ts              startdata + vul-functie
+    dates.ts             aanbiedings-datumhelpers
   styles/
     globals.css          tokens + reset
     components.css        componentstijlen
 firestore.rules          Firestore beveiligingsregels
+functions/index.js       recept-proxy (Cloud Function, blijft JS/CommonJS)
 ```
 
 ## Scripts
 
-| Commando          | Doel                       |
-| ----------------- | -------------------------- |
-| `npm run dev`     | dev-server (HMR)           |
-| `npm run build`   | productie-build naar `dist/` |
-| `npm run preview` | build lokaal bekijken      |
-| `npm run lint`    | ESLint                     |
+| Commando             | Doel                          |
+| -------------------- | ----------------------------- |
+| `npm run dev`        | dev-server (HMR)              |
+| `npm run build`      | typecheck + productie-build naar `dist/` |
+| `npm run typecheck`  | alleen TypeScript-check (`tsc -b`) |
+| `npm run preview`    | build lokaal bekijken         |
+| `npm run lint`       | ESLint (typescript-eslint)    |
