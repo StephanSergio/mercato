@@ -1,0 +1,33 @@
+rules_version = '2';
+
+// ============================================================
+// Mercato Firestore-regels
+// ------------------------------------------------------------
+// De app gebruikt GEEN login (bewuste keuze: het gezin deelt de
+// lijst direct). Deze regels staan lezen/schrijven open op de drie
+// app-collecties, en blokkeren al het andere.
+//
+// LET OP: open schrijven betekent dat iedereen die de proj*-config
+// kent kan schrijven. Prima voor een privé gezins-app. Wil je het
+// dichter? Voeg Firebase Anonymous Auth toe en eis `request.auth`.
+// ============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /ingredients/{doc} {
+      allow read, write: if true;
+    }
+    match /shoppingList/{doc} {
+      allow read, write: if true;
+    }
+    match /categories/{doc} {
+      allow read, write: if true;
+    }
+
+    // Alles wat hier niet expliciet genoemd is, blijft dicht.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
