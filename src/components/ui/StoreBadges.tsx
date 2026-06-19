@@ -4,7 +4,8 @@ interface StoreBadgesProps {
   stores: StoreName[] | undefined
 }
 
-// Kleine gekleurde tekst-badges per winkel: AH (blauw), Lidl (blauw/geel), Deka (rood).
+// Kleine, monochrome tekst-badges per winkel (AH / Lidl / Deka) — neutrale
+// hairline-chips, géén luide merkkleuren. Stijl staat in components.css.
 export default function StoreBadges({ stores }: StoreBadgesProps) {
   if (!stores || !stores.length) return null
   return (

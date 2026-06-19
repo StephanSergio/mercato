@@ -21,12 +21,8 @@
 .app-header__title {
   font-size: var(--text-display);
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   line-height: 1.1;
-  /* Signature: copper underline accent */
-  display: inline-block;
-  border-bottom: 1.5px solid var(--c-copper);
-  padding-bottom: 4px;
 }
 
 .app-header__subtitle {
@@ -186,9 +182,9 @@
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 .chip-toggle[aria-pressed='true'] {
-  background: var(--c-copper-soft);
-  border-color: var(--c-copper);
-  color: var(--c-copper);
+  background: var(--c-sale-soft);
+  border-color: var(--c-sale);
+  color: var(--c-sale);
 }
 
 /* ─────────── Sale badge ─────────── */
@@ -198,11 +194,12 @@
   gap: 4px;
   padding: 2px 10px;
   border-radius: var(--radius-pill);
-  background: var(--c-copper);
+  background: var(--c-sale);
   color: #fff;
   font-size: var(--text-overline);
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 .sale-badge--expired {
@@ -216,23 +213,19 @@
   gap: 4px;
   flex-wrap: wrap;
 }
+/* Monochrome, understated: hairline outline + muted uppercase label.
+   Store identity reads from the text, not loud brand colours. */
 .store-badge {
   display: inline-block;
-  padding: 1px 7px;
+  padding: 1px 8px;
   border-radius: var(--radius-pill);
+  border: 1px solid var(--c-sand);
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  color: #fff;
-}
-.store-badge--AH {
-  background: var(--store-ah);
-}
-.store-badge--Lidl {
-  background: var(--store-lidl);
-}
-.store-badge--Deka {
-  background: var(--store-deka);
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--c-stone);
+  background: transparent;
 }
 
 /* ─────────── Category header ─────────── */
@@ -457,7 +450,7 @@
   justify-content: center;
   padding: var(--sp-2) var(--sp-2)
     calc(var(--sp-2) + env(safe-area-inset-bottom));
-  background: rgba(245, 242, 237, 0.85);
+  background: rgba(244, 244, 242, 0.85);
   backdrop-filter: saturate(180%) blur(16px);
   -webkit-backdrop-filter: saturate(180%) blur(16px);
   border-top: 1px solid var(--c-sand);
@@ -766,15 +759,15 @@
   box-shadow: var(--shadow-card);
   position: relative;
 }
-/* Signature: thin copper top-line on recipe card */
+/* Thin hairline rule across the top of the recipe card */
 .recipe-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: var(--sp-5);
   right: var(--sp-5);
-  height: 1.5px;
-  background: var(--c-copper);
+  height: 1px;
+  background: var(--c-sand);
 }
 .recipe-card__title {
   font-size: 28px;
@@ -959,34 +952,33 @@
   flex-shrink: 0;
 }
 
-/* ── Signature leader: name ···· numeral (the "menu card") ── */
+/* ── Row label: name (left) · amount (right), no leader dots ── */
 .leader {
   display: flex;
   align-items: baseline;
-  gap: var(--sp-2);
+  gap: var(--sp-3);
   width: 100%;
   min-width: 0;
 }
 .leader__name {
+  flex: 1 1 auto;
   color: var(--c-ink);
-  font-weight: 600;
+  font-weight: 500;
   font-size: var(--text-body);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .leader__dots {
-  flex: 1 1 auto;
-  border-bottom: 1px dotted var(--c-leader-dot);
-  transform: translateY(-3px);
-  min-width: 16px;
+  display: none;
 }
 .leader__num {
-  font-family: var(--font-display);
-  font-size: 16px;
+  flex-shrink: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-caption);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  color: var(--c-numeral);
+  color: var(--c-faint);
   white-space: nowrap;
 }
 

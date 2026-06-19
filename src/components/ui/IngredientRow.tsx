@@ -11,7 +11,7 @@ interface IngredientRowProps {
 }
 
 // Eén rij in de ingrediëntenlijst (Browser). Grote aantikvlak: hele rij is een knop.
-// Signature: naam ···· eenheid (leader). `onList` → sage linkerrand + ✓.
+// Naam links, eenheid rechts (gedempt). `onList` → ink linkerrand + ✓.
 export default function IngredientRow({
   ingredient,
   onList,
@@ -37,7 +37,6 @@ export default function IngredientRow({
       <span className="ingredient-row__body">
         <span className="leader">
           <span className="leader__name">{ingredient.name}</span>
-          <span className="leader__dots" aria-hidden="true" />
           {ingredient.unit && (
             <span className="leader__num">{ingredient.unit}</span>
           )}
