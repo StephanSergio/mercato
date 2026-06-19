@@ -137,7 +137,6 @@ export default function ShoppingList({
                       <span className="leader__name check-row__name">
                         {item.name}
                       </span>
-                      <span className="leader__dots" aria-hidden="true" />
                       {ing?.unit && (
                         <span className="leader__num">{ing.unit}</span>
                       )}

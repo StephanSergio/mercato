@@ -1,35 +1,35 @@
 /* ============================================================
    Mercato — globals.css
    Design tokens + reset
-   Direction: Editorial Chic · Refined · Lush · Elegant
+   Direction: Nordic Minimal — monochrome, cool off-white, sans
+   (inspired by rains.com: near-white canvas, near-black text,
+    generous space, color held back to one restrained red)
    ============================================================ */
 
 :root {
   /* ── Palette ── */
-  --c-parchment:    #F4F1EA;   /* Page background — warm linen              */
+  --c-parchment:    #F4F4F2;   /* Page background — cool neutral off-white  */
   --c-surface:      #FFFFFF;   /* Cards, rows                              */
-  --c-ink:          #1B1A17;   /* Primary text — deep warm black            */
-  --c-stone:        #6F695F;   /* Secondary text, captions (muted)          */
-  --c-faint:        #9A9288;   /* Metadata, numerals at rest, placeholders  */
-  --c-olive:        #7C8A6C;   /* "On list" / success — refined sage        */
-  --c-olive-soft:   #E9EDE2;   /* Soft sage wash for chips/backgrounds      */
-  --c-night:        #22324E;   /* Primary CTA / accent — deep night-blue    */
-  --c-night-hover:  #172339;   /* Night hover / pressed                     */
-  --c-copper:       #A8762C;   /* Signature warm accent — ochre (sale only) */
-  --c-copper-soft:  #F7EFDF;   /* Soft ochre wash                           */
-  --c-sand:         #E2DBCE;   /* Borders, dividers (hairline)              */
-  --c-highlight:    #F7EFDF;   /* Sale/promo background                     */
-  --c-danger:       #9C3A2D;   /* Destructive                               */
-  --c-leader-dot:   #C9C1B2;   /* Dotted leader line                        */
-  --c-numeral:      #3A372F;   /* Serif numerals                            */
+  --c-ink:          #161615;   /* Primary text — near-black                 */
+  --c-stone:        #6E6E69;   /* Secondary text, captions (muted)          */
+  --c-faint:        #A2A29C;   /* Metadata, numerals at rest, placeholders  */
+  --c-olive:        #161615;   /* "On list" / active — solid ink (mono)     */
+  --c-olive-soft:   #ECECE8;   /* Soft neutral wash for chips/backgrounds   */
+  --c-night:        #161615;   /* Primary CTA — near-black                   */
+  --c-night-hover:  #000000;   /* CTA hover / pressed                       */
+  --c-copper:       #161615;   /* Structural accent → ink (was ochre)       */
+  --c-copper-soft:  #ECECE8;   /* Neutral wash                              */
+  --c-sand:         #E4E4E0;   /* Borders, dividers (hairline)              */
+  --c-highlight:    #FBF1EF;   /* Sale/promo background — faint red wash     */
+  --c-danger:       #B23A2E;   /* Destructive                               */
+  --c-sale:         #B23A2E;   /* Sale accent — single restrained red       */
+  --c-sale-soft:    #FBF1EF;   /* Soft red wash                             */
+  --c-leader-dot:   #E4E4E0;   /* (legacy — leader line removed)            */
+  --c-numeral:      #6E6E69;   /* Numerals — muted grey                     */
 
-  /* Store brand colours (fixed) */
-  --store-ah:       #1F4BA3;
-  --store-lidl:     #0050AA;
-  --store-deka:     #D6203A;
-
-  /* ── Typography ── */
-  --font-display: 'Cormorant Garamond', 'Georgia', 'Times New Roman', serif;
+  /* ── Typography — all sans (no serif) ── */
+  --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+                   Roboto, sans-serif;
   --font-body:    'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
                    Roboto, sans-serif;
 
@@ -129,11 +129,13 @@ h4 {
   font-family: var(--font-display);
   font-weight: 600;
   line-height: 1.15;
+  letter-spacing: -0.015em;
 }
 
 a {
-  color: var(--c-copper);
-  text-decoration: none;
+  color: var(--c-ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 a:hover {
   text-decoration: underline;
