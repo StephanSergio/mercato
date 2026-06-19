@@ -1,3 +1,4 @@
+import { Clock, Users, Lightbulb } from 'lucide-react'
 import type { Recipe } from '../../types'
 
 interface RecipeCardProps {
@@ -21,15 +22,26 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
 
   return (
     <article className="recipe-card">
+      <div className="recipe-card__kicker">Voorstel van Mercato</div>
       <h2 className="recipe-card__title">{title}</h2>
       {description && <p className="recipe-card__desc">{description}</p>}
 
       <div className="recipe-card__pills">
-        {servings != null && (
-          <span className="recipe-pill">👥 {servings} pers.</span>
+        {prepTime && (
+          <span className="recipe-pill">
+            <Clock size={14} strokeWidth={1.75} /> {prepTime}
+          </span>
         )}
-        {prepTime && <span className="recipe-pill">🔪 {prepTime}</span>}
-        {cookTime && <span className="recipe-pill">🔥 {cookTime}</span>}
+        {cookTime && (
+          <span className="recipe-pill">
+            <Clock size={14} strokeWidth={1.75} /> {cookTime}
+          </span>
+        )}
+        {servings != null && (
+          <span className="recipe-pill">
+            <Users size={14} strokeWidth={1.75} /> {servings} personen
+          </span>
+        )}
       </div>
 
       {ingredients.length > 0 && (
@@ -59,7 +71,9 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
 
       {tip && (
         <div className="recipe-tip">
-          <div className="recipe-tip__label">Tip van de kok</div>
+          <div className="recipe-tip__label">
+            <Lightbulb size={13} strokeWidth={1.75} /> Tip van de kok
+          </div>
           <div>{tip}</div>
         </div>
       )}

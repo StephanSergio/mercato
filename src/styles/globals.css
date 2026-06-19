@@ -6,19 +6,22 @@
 
 :root {
   /* ── Palette ── */
-  --c-parchment:    #F5F2ED;   /* Page background — warm stone paper       */
+  --c-parchment:    #F4F1EA;   /* Page background — warm linen              */
   --c-surface:      #FFFFFF;   /* Cards, rows                              */
-  --c-ink:          #1C1917;   /* Primary text — deep warm black            */
-  --c-stone:        #94908A;   /* Secondary text, captions                  */
-  --c-olive:        #6B7A5E;   /* "On list" / success — refined sage        */
-  --c-olive-soft:   #E8ECE2;   /* Soft olive wash for chips/backgrounds     */
-  --c-night:        #1E2A3A;   /* Primary CTA — deep night-blue             */
-  --c-night-hover:  #162230;   /* Night hover                               */
-  --c-copper:       #B5845A;   /* Signature warm accent — editorial copper   */
-  --c-copper-soft:  #F3EAE0;   /* Soft copper wash                          */
-  --c-sand:         #DDD8D0;   /* Borders, dividers                         */
-  --c-highlight:    #FEF7EF;   /* Sale/promo background                     */
-  --c-danger:       #8B3A2F;   /* Destructive                               */
+  --c-ink:          #1B1A17;   /* Primary text — deep warm black            */
+  --c-stone:        #6F695F;   /* Secondary text, captions (muted)          */
+  --c-faint:        #9A9288;   /* Metadata, numerals at rest, placeholders  */
+  --c-olive:        #7C8A6C;   /* "On list" / success — refined sage        */
+  --c-olive-soft:   #E9EDE2;   /* Soft sage wash for chips/backgrounds      */
+  --c-night:        #22324E;   /* Primary CTA / accent — deep night-blue    */
+  --c-night-hover:  #172339;   /* Night hover / pressed                     */
+  --c-copper:       #A8762C;   /* Signature warm accent — ochre (sale only) */
+  --c-copper-soft:  #F7EFDF;   /* Soft ochre wash                           */
+  --c-sand:         #E2DBCE;   /* Borders, dividers (hairline)              */
+  --c-highlight:    #F7EFDF;   /* Sale/promo background                     */
+  --c-danger:       #9C3A2D;   /* Destructive                               */
+  --c-leader-dot:   #C9C1B2;   /* Dotted leader line                        */
+  --c-numeral:      #3A372F;   /* Serif numerals                            */
 
   /* Store brand colours (fixed) */
   --store-ah:       #1F4BA3;
@@ -51,7 +54,10 @@
   /* ── Shape ── */
   --radius-card:    3px;    /* Sharp, couture, precise                    */
   --radius-button:  3px;
-  --radius-pill:    999px;  /* Only pills/badges                          */
+  /* "Optie A — bijna vierkant": géén pillen in de UI. Badges/chips/track
+     gebruiken dezelfde scherpe radius; alleen echte cirkels (knoppen,
+     spinner) gebruiken border-radius:50% direct. */
+  --radius-pill:    2px;
 
   /* ── Layout ── */
   --touch-target:      44px;

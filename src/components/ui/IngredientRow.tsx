@@ -1,3 +1,4 @@
+import { Plus, Check } from 'lucide-react'
 import StoreBadges from './StoreBadges'
 import SaleBadge from './SaleBadge'
 import { isActiveSale } from '../../lib/dates'
@@ -10,7 +11,7 @@ interface IngredientRowProps {
 }
 
 // Eén rij in de ingrediëntenlijst (Browser). Grote aantikvlak: hele rij is een knop.
-// `onList` markeert dat het al op de winkellijst staat (sage groen randje).
+// Signature: naam ···· eenheid (leader). `onList` → sage linkerrand + ✓.
 export default function IngredientRow({
   ingredient,
   onList,
@@ -34,14 +35,19 @@ export default function IngredientRow({
       aria-pressed={onList}
     >
       <span className="ingredient-row__body">
-        <span className="ingredient-row__name">{ingredient.name}</span>
-        <span className="ingredient-row__meta">
+        <span className="leader">
+          <span className="leader__name">{ingredient.name}</span>
+          <span className="leader__dots" aria-hidden="true" />
           {ingredient.unit && (
-            <span className="ingredient-row__unit">{ingredient.unit}</span>
+            <span className="leader__num">{ingredient.unit}</span>
           )}
-          <StoreBadges stores={ingredient.store} />
-          {ingredient.onSale && <SaleBadge ingredient={ingredient} />}
         </span>
+        {(ingredient.store?.length || ingredient.onSale) && (
+          <span className="ingredient-row__meta">
+            <StoreBadges stores={ingredient.store} />
+            {ingredient.onSale && <SaleBadge ingredient={ingredient} />}
+          </span>
+        )}
       </span>
       <span
         className={`ingredient-row__indicator${
@@ -49,7 +55,11 @@ export default function IngredientRow({
         }`}
         aria-hidden="true"
       >
-        {onList ? '✓' : '+'}
+        {onList ? (
+          <Check size={16} strokeWidth={2.5} />
+        ) : (
+          <Plus size={16} strokeWidth={2.5} />
+        )}
       </span>
     </button>
   )

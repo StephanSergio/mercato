@@ -1,3 +1,4 @@
+import { Tag, Hourglass } from 'lucide-react'
 import { isSaleExpired, formatShortDate } from '../../lib/dates'
 import type { Ingredient } from '../../types'
 
@@ -29,9 +30,13 @@ export default function SaleBadge({
           : undefined
       }
     >
-      {expired ? '⏳' : '🏷️'} {store}
-      {label}
-      {showDate && ingredient.saleUntil
+      {expired ? (
+        <Hourglass size={11} strokeWidth={2} aria-hidden="true" />
+      ) : (
+        <Tag size={11} strokeWidth={2} aria-hidden="true" />
+      )}
+      {expired ? 'Verlopen' : `${store}${label}`}
+      {showDate && !expired && ingredient.saleUntil
         ? ` (t/m ${formatShortDate(ingredient.saleUntil)})`
         : ''}
     </span>
