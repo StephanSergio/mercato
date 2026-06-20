@@ -24,6 +24,12 @@ service cloud.firestore {
     match /categories/{doc} {
       allow read, write: if true;
     }
+    match /dishVotes/{doc} {
+      allow read, write: if true;
+    }
+    match /weekMenu/{doc} {
+      allow read, write: if true;
+    }
 
     // Alles wat hier niet expliciet genoemd is, blijft dicht.
     match /{document=**} {

@@ -31,4 +31,7 @@ export const COLLECTIONS = {
   ingredients: 'ingredients',
   shoppingList: 'shoppingList',
   categories: 'categories',
+  // "Tinder voor eten": losse ja/nee-stemmen en het vastgezette weekmenu.
+  dishVotes: 'dishVotes',
+  weekMenu: 'weekMenu',
 } as const
