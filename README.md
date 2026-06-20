@@ -17,6 +17,10 @@ Gebouwd met React + Vite, gehost op GitHub Pages.
   een item aan om het toe te voegen aan / te verwijderen van de lijst.
 - **👨‍🍳 Recepten** — Claude stelt één recept voor op basis van je lijst, en kan
   ontbrekende ingrediënten toevoegen.
+- **❤️ Match** ("Tinder voor eten") — swipe samen door gerecht-suggesties. Zegt
+  iedereen *ja* tegen hetzelfde gerecht voor een dag, dan is het een match die
+  je op het **weekmenu** kunt vastzetten. Werkt met een vaste deck en — als de
+  Claude-sleutel/proxy is ingesteld — met verse AI-suggesties.
 - **⚙️ Beheer** — volledig CRUD voor ingrediënten, aanbiedingen en categorieën,
   plus een knop om de database te vullen met startdata.
 

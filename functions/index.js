@@ -39,6 +39,17 @@ Geef het recept terug als JSON met deze structuur (ALLEEN JSON, geen uitleg erbu
   "tip": "Een praktische tip van Jamie-stijl."
 }`
 
+// Prompt voor het Match-scherm: een deck gerecht-suggesties om te swipen.
+const DISHES_SYSTEM_PROMPT = `Je bent een enthousiaste Nederlandse thuiskok.
+Je stelt een gevarieerde lijst avondmaaltijden voor om uit te kiezen.
+Geef ALLEEN JSON terug (geen uitleg eromheen) met deze structuur:
+{
+  "dishes": [
+    { "emoji": "🍝", "title": "Naam van het gerecht", "description": "Eén korte, verleidelijke zin." }
+  ]
+}
+Gebruik telkens precies één passende emoji per gerecht.`
+
 // Beperk welke origins de proxy mogen aanroepen. Pas aan naar jouw domein(en).
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
@@ -54,12 +65,33 @@ exports.recipe = onRequest(
       return
     }
 
-    const ingredients = req.body?.ingredients
-    if (!Array.isArray(ingredients) || ingredients.length === 0) {
-      res
-        .status(400)
-        .json({ error: { message: 'Geef een niet-lege "ingredients" array.' } })
-      return
+    // Twee modi delen deze proxy:
+    //   • standaard: { ingredients: [...] }      → één recept
+    //   • Match-scherm: { mode: "dishes", count } → deck gerecht-suggesties
+    const mode = req.body?.mode === 'dishes' ? 'dishes' : 'recipe'
+
+    let system
+    let userContent
+    let maxTokens
+
+    if (mode === 'dishes') {
+      const count = Math.min(Math.max(Number(req.body?.count) || 12, 1), 24)
+      system = DISHES_SYSTEM_PROMPT
+      userContent = `Stel ${count} gevarieerde avondmaaltijden voor (verschillende keukens, mix van vlees, vis en vega).`
+      maxTokens = 1200
+    } else {
+      const ingredients = req.body?.ingredients
+      if (!Array.isArray(ingredients) || ingredients.length === 0) {
+        res
+          .status(400)
+          .json({ error: { message: 'Geef een niet-lege "ingredients" array.' } })
+        return
+      }
+      system = SYSTEM_PROMPT
+      userContent = `Mijn ingrediënten: ${ingredients.join(
+        ', '
+      )}. Stel een recept voor.`
+      maxTokens = 1000
     }
 
     try {
@@ -72,16 +104,9 @@ exports.recipe = onRequest(
         },
         body: JSON.stringify({
           model: MODEL,
-          max_tokens: 1000,
-          system: SYSTEM_PROMPT,
-          messages: [
-            {
-              role: 'user',
-              content: `Mijn ingrediënten: ${ingredients.join(
-                ', '
-              )}. Stel een recept voor.`,
-            },
-          ],
+          max_tokens: maxTokens,
+          system,
+          messages: [{ role: 'user', content: userContent }],
         }),
       })
 

@@ -2,6 +2,7 @@ import {
   ShoppingCart,
   List,
   ChefHat,
+  Heart,
   SlidersHorizontal,
   type LucideIcon,
 } from 'lucide-react'
@@ -17,6 +18,7 @@ const TABS: Tab[] = [
   { id: 'list', icon: ShoppingCart, label: 'Lijst' },
   { id: 'browse', icon: List, label: 'Ingrediënten' },
   { id: 'recipe', icon: ChefHat, label: 'Recepten' },
+  { id: 'match', icon: Heart, label: 'Match' },
   { id: 'admin', icon: SlidersHorizontal, label: 'Beheer' },
 ]
 

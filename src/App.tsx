@@ -5,6 +5,7 @@ import ShoppingList from './components/ShoppingList'
 import IngredientBrowser from './components/IngredientBrowser'
 import AdminPanel from './components/AdminPanel'
 import RecipeGenerator from './components/RecipeGenerator'
+import MatchSwiper from './components/MatchSwiper'
 import NameModal from './components/NameModal'
 import { useShoppingList } from './hooks/useShoppingList'
 import { useIngredients } from './hooks/useIngredients'
@@ -17,6 +18,7 @@ const SCREEN_TITLES: Record<ScreenId, { title: string; subtitle: string }> = {
   list: { title: 'Winkellijst', subtitle: 'Samen boodschappen doen' },
   browse: { title: 'Ingrediënten', subtitle: 'Tik aan om toe te voegen' },
   recipe: { title: 'Recepten', subtitle: 'Laat de kok iets voorstellen' },
+  match: { title: 'Match', subtitle: 'Swipe samen het menu bij elkaar' },
   admin: { title: 'Beheer', subtitle: 'Producten, aanbiedingen, categorieën' },
 }
 
@@ -115,6 +117,14 @@ export default function App() {
             shoppingItems={shopping.items}
             ingredients={ingredientsHook.ingredients}
             onAddToList={addToList}
+          />
+        )}
+
+        {screen === 'match' && (
+          <MatchSwiper
+            userName={userName}
+            hasName={hasName}
+            onNeedName={() => setShowNameModal(true)}
           />
         )}
 

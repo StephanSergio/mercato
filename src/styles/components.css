@@ -1064,3 +1064,285 @@
   align-items: center;
   gap: 5px;
 }
+
+/* ============================================================
+   Match — "Tinder voor eten"
+   ============================================================ */
+
+/* Donkere spinner-variant (op lichte achtergrond) */
+.spinner--dark {
+  border-color: var(--c-sand);
+  border-top-color: var(--c-ink);
+}
+
+/* ── Dagkiezer ── */
+.day-picker {
+  display: flex;
+  gap: 6px;
+  margin-bottom: var(--sp-5);
+}
+.day-chip {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 40px;
+  padding: 6px 4px;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--c-sand);
+  background: var(--c-surface);
+  color: var(--c-stone);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.day-chip--active {
+  background: var(--c-ink);
+  border-color: var(--c-ink);
+  color: #fff;
+}
+.day-chip--locked:not(.day-chip--active) {
+  border-color: var(--c-olive);
+  color: var(--c-olive);
+}
+
+/* ── Swipe-deck + kaart ── */
+.swipe-deck {
+  position: relative;
+  min-height: 280px;
+  display: grid;
+  place-items: center;
+  margin-bottom: var(--sp-4);
+}
+.dish-card {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  min-height: 264px;
+  padding: var(--sp-6) var(--sp-5);
+  background: var(--c-surface);
+  border: 1px solid var(--c-sand);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+}
+.dish-card:active {
+  cursor: grabbing;
+}
+.dish-card--empty {
+  cursor: default;
+  gap: var(--sp-3);
+}
+.dish-card__emoji {
+  font-size: 56px;
+  line-height: 1;
+  margin-bottom: var(--sp-4);
+}
+.dish-card__title {
+  font-size: var(--text-heading);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  margin-bottom: var(--sp-2);
+}
+.dish-card__desc {
+  color: var(--c-stone);
+  font-size: var(--text-body);
+  line-height: 1.5;
+}
+.dish-card__count {
+  margin-top: var(--sp-5);
+  font-size: var(--text-overline);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-faint);
+}
+.dish-card__stamp {
+  position: absolute;
+  top: var(--sp-4);
+  padding: 4px 12px;
+  border-radius: var(--radius-button);
+  font-weight: 800;
+  font-size: var(--text-label);
+  letter-spacing: 0.08em;
+  border: 2px solid currentColor;
+}
+.dish-card__stamp--yes {
+  right: var(--sp-4);
+  color: var(--c-olive);
+  transform: rotate(8deg);
+}
+.dish-card__stamp--no {
+  left: var(--sp-4);
+  color: var(--c-danger);
+  transform: rotate(-8deg);
+}
+
+/* ── Ja / nee-knoppen ── */
+.swipe-actions {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-5);
+  margin-bottom: var(--sp-4);
+}
+.swipe-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--c-surface);
+  border: 1.5px solid var(--c-sand);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.15s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.swipe-btn:active {
+  transform: scale(0.92);
+}
+.swipe-btn--no {
+  color: var(--c-danger);
+}
+.swipe-btn--no:hover {
+  border-color: var(--c-danger);
+}
+.swipe-btn--yes {
+  color: var(--c-olive);
+}
+.swipe-btn--yes:hover {
+  border-color: var(--c-olive);
+}
+
+/* ── AI-suggesties ── */
+.match-ai {
+  text-align: center;
+  margin-bottom: var(--sp-6);
+}
+.match-ai__error {
+  margin-top: var(--sp-2);
+  font-size: var(--text-caption);
+  color: var(--c-danger);
+}
+
+/* ── Match-secties ── */
+.match-section {
+  margin-top: var(--sp-6);
+}
+.match-section__title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-display);
+  font-size: var(--text-sub);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  padding-bottom: var(--sp-2);
+  margin-bottom: var(--sp-3);
+  border-bottom: 1px solid var(--c-sand);
+}
+.match-section__badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--c-olive);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: var(--text-overline);
+  font-weight: 700;
+}
+.match-section__empty {
+  font-size: var(--text-caption);
+  line-height: 1.5;
+}
+
+/* ── Match-rij ── */
+.match-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--c-olive-soft);
+  border: 1px solid var(--c-sand);
+  border-left: 2px solid var(--c-olive);
+  border-radius: var(--radius-card);
+  margin-bottom: 6px;
+}
+.match-row__emoji {
+  font-size: 26px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.match-row__body {
+  flex: 1;
+  min-width: 0;
+}
+.match-row__title {
+  font-weight: 600;
+  font-size: var(--text-body);
+}
+.match-row__voters {
+  font-size: var(--text-caption);
+  color: var(--c-stone);
+  margin-top: 2px;
+}
+
+/* ── Weekmenu ── */
+.week-menu {
+  border: 1px solid var(--c-sand);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--c-surface);
+  box-shadow: var(--shadow-card);
+}
+.week-menu__row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--c-parchment);
+}
+.week-menu__row:last-child {
+  border-bottom: none;
+}
+.week-menu__row--filled {
+  background: var(--c-highlight);
+}
+.week-menu__day {
+  flex-shrink: 0;
+  width: 28px;
+  font-size: var(--text-overline);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--c-stone);
+}
+.week-menu__emoji {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.week-menu__dish {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--text-body);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.week-menu__clear {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
