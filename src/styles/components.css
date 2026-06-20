@@ -423,6 +423,39 @@
   color: var(--c-stone);
   font-style: italic;
 }
+/* Aantal-stepper (− N +) */
+.qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  border: 1px solid var(--c-sand);
+  border-radius: var(--radius-button);
+  background: var(--c-surface);
+  overflow: hidden;
+}
+.qty-stepper__btn {
+  width: 30px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: var(--c-ink);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.qty-stepper__btn:hover:not(:disabled) {
+  background: var(--c-olive-soft);
+}
+.qty-stepper__btn:disabled {
+  color: var(--c-faint);
+  cursor: not-allowed;
+}
+.qty-stepper__val {
+  min-width: 22px;
+  text-align: center;
+  font-size: var(--text-body);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
 .check-row__remove {
   flex-shrink: 0;
   width: 32px;

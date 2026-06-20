@@ -35,6 +35,8 @@ export interface ShoppingItem {
   ingredientId: string
   name: string
   category: string
+  // Aantal (bv. 3 appels). Default 1; ontbreekt op oude documenten.
+  qty?: number
   checked: boolean
   addedBy: string
   // serverTimestamp() bij schrijven (FieldValue), Timestamp bij lezen.

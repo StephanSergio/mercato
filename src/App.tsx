@@ -98,6 +98,7 @@ export default function App() {
             categories={categoriesHook.categories}
             ingredients={ingredientsHook.ingredients}
             onToggle={shopping.toggleChecked}
+            onSetQty={shopping.setQty}
             onRemove={shopping.removeItem}
             onClearChecked={shopping.clearChecked}
           />

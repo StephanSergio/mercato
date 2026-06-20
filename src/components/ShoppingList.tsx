@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Check, X, Trash2, ShoppingCart } from 'lucide-react'
+import { Check, X, Trash2, ShoppingCart, Minus, Plus } from 'lucide-react'
 import CategoryHeader from './ui/CategoryHeader'
 import SaleBadge from './ui/SaleBadge'
 import { isActiveSale } from '../lib/dates'
@@ -10,6 +10,7 @@ interface ShoppingListProps {
   categories: Category[]
   ingredients: Ingredient[]
   onToggle: (item: ShoppingItem) => void
+  onSetQty: (item: ShoppingItem, qty: number) => void
   onRemove: (id: string) => void
   onClearChecked: () => void
 }
@@ -27,6 +28,7 @@ export default function ShoppingList({
   categories,
   ingredients,
   onToggle,
+  onSetQty,
   onRemove,
   onClearChecked,
 }: ShoppingListProps) {
@@ -151,6 +153,26 @@ export default function ShoppingList({
                     </span>
                   </span>
                 </button>
+                <div className="qty-stepper" aria-label="Aantal">
+                  <button
+                    type="button"
+                    className="qty-stepper__btn"
+                    onClick={() => onSetQty(item, (item.qty ?? 1) - 1)}
+                    disabled={(item.qty ?? 1) <= 1}
+                    aria-label="Eén minder"
+                  >
+                    <Minus size={15} strokeWidth={2.25} />
+                  </button>
+                  <span className="qty-stepper__val">{item.qty ?? 1}</span>
+                  <button
+                    type="button"
+                    className="qty-stepper__btn"
+                    onClick={() => onSetQty(item, (item.qty ?? 1) + 1)}
+                    aria-label="Eén meer"
+                  >
+                    <Plus size={15} strokeWidth={2.25} />
+                  </button>
+                </div>
                 <button
                   type="button"
                   className="check-row__remove"

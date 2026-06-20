@@ -36,21 +36,40 @@ export function useShoppingList() {
     return unsub
   }, [])
 
-  // Voegt een ingrediënt toe (gedenormaliseerd voor snelheid).
-  const addItem = (ingredient: AddToListInput, addedBy: string) =>
-    addDoc(collection(db, COLLECTIONS.shoppingList), {
+  // Voegt een ingrediënt toe (gedenormaliseerd voor snelheid). Staat het
+  // ingrediënt al op de lijst, dan verhogen we het aantal i.p.v. een
+  // duplicaat. Vrije-tekst-items (zonder ingredientId) worden altijd toegevoegd.
+  const addItem = (ingredient: AddToListInput, addedBy: string) => {
+    const existing = ingredient.id
+      ? items.find((i) => i.ingredientId === ingredient.id)
+      : undefined
+    if (existing) {
+      return updateDoc(doc(db, COLLECTIONS.shoppingList, existing.id), {
+        qty: (existing.qty ?? 1) + 1,
+        checked: false,
+      })
+    }
+    return addDoc(collection(db, COLLECTIONS.shoppingList), {
       ingredientId: ingredient.id,
       name: ingredient.name,
       category: ingredient.category,
+      qty: 1,
       checked: false,
       addedBy: addedBy || 'Onbekend',
       addedAt: serverTimestamp(),
     })
+  }
 
   const toggleChecked = (item: ShoppingItem) =>
     updateDoc(doc(db, COLLECTIONS.shoppingList, item.id), {
       checked: !item.checked,
     })
+
+  // Zet het aantal; bij 0 of minder verdwijnt het item van de lijst.
+  const setQty = (item: ShoppingItem, qty: number) => {
+    if (qty < 1) return removeItem(item.id)
+    return updateDoc(doc(db, COLLECTIONS.shoppingList, item.id), { qty })
+  }
 
   const removeItem = (id: string) =>
     deleteDoc(doc(db, COLLECTIONS.shoppingList, id))
@@ -77,6 +96,7 @@ export function useShoppingList() {
     items,
     loading,
     addItem,
+    setQty,
     toggleChecked,
     removeItem,
     removeByIngredientId,
