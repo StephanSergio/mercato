@@ -7,16 +7,25 @@ import {
   CalendarCheck,
   Lock,
   Trash2,
+  ShoppingBasket,
+  Check,
 } from 'lucide-react'
 import { useMatch } from '../hooks/useMatch'
 import { WEEKDAYS, weekdayKeyOf } from '../lib/dates'
-import { defaultDeck, generateDishIdeas, isDishAiEnabled } from '../lib/dishes'
-import type { DishIdea, WeekdayKey } from '../types'
+import {
+  defaultDeck,
+  dishIngredientsById,
+  generateDishIdeas,
+  isDishAiEnabled,
+} from '../lib/dishes'
+import { consolidate } from '../lib/pantry'
+import type { ConsolidatedItem, DishIdea, WeekdayKey } from '../types'
 
 interface MatchSwiperProps {
   userName: string
   hasName: boolean
   onNeedName: () => void
+  onAddToList: (items: ConsolidatedItem[], addedBy: string) => void
 }
 
 // Afstand (px) waarop een sleep telt als ja/nee.
@@ -26,26 +35,31 @@ export default function MatchSwiper({
   userName,
   hasName,
   onNeedName,
+  onAddToList,
 }: MatchSwiperProps) {
   const match = useMatch(userName)
   const [day, setDay] = useState<WeekdayKey>(() => weekdayKeyOf())
   const [deck, setDeck] = useState<DishIdea[]>(() => defaultDeck())
   const [loadingAi, setLoadingAi] = useState(false)
   const [aiError, setAiError] = useState('')
+  // Lokaal "al beoordeeld" (key = `dag:dishId`) zodat de kaart direct
+  // doorschuift, ook vóór de server-bevestiging terugkomt.
+  const [seen, setSeen] = useState<Record<string, true>>({})
+  // Welke bronnen al op de lijst zijn gezet (voor "toegevoegd"-feedback).
+  const [added, setAdded] = useState<Record<string, true>>({})
 
   // Sleep-status van de bovenste kaart.
   const [drag, setDrag] = useState({ dx: 0, active: false })
   const startX = useRef(0)
 
-  // Kaarten die deze persoon op deze dag nog niet beoordeeld heeft.
-  const votedIds = match.votedDishIdsFor(day)
+  const serverVoted = match.votedDishIdsFor(day)
   const queue = useMemo(
-    () => deck.filter((d) => !votedIds.has(d.id)),
-    // votedIds verandert via votes; deck via refresh/dag.
-    [deck, day, match.votes] // eslint-disable-line react-hooks/exhaustive-deps
+    () =>
+      deck.filter((d) => !seen[`${day}:${d.id}`] && !serverVoted.has(d.id)),
+    // serverVoted volgt uit match.votes; deck/seen/day expliciet.
+    [deck, day, seen, match.votes] // eslint-disable-line react-hooks/exhaustive-deps
   )
   const top = queue[0]
-
   const matches = match.matchesForDay(day)
 
   async function refreshFromAi() {
@@ -54,6 +68,7 @@ export default function MatchSwiper({
     try {
       const ideas = await generateDishIdeas(12)
       setDeck(ideas)
+      setSeen({})
     } catch (e) {
       setAiError(e instanceof Error ? e.message : 'Er ging iets mis.')
     } finally {
@@ -66,8 +81,29 @@ export default function MatchSwiper({
       onNeedName()
       return
     }
-    void match.castVote(dish, day, choice)
+    // Direct doorschuiven (optimistisch); stem schrijven voor de match.
+    setSeen((s) => ({ ...s, [`${day}:${dish.id}`]: true }))
     setDrag({ dx: 0, active: false })
+    void match.castVote(dish, day, choice)
+  }
+
+  // Eén gematcht gerecht → boodschappen op de lijst.
+  function addDishToList(dishId: string, title: string) {
+    const items = consolidate(dishIngredientsById(dishId))
+    if (!items.length) return
+    onAddToList(items, title)
+    setAdded((a) => ({ ...a, [dishId]: true }))
+  }
+
+  // Het hele (vastgezette) weekmenu → samengevoegde boodschappen op de lijst.
+  function addWeekToList() {
+    const all = [...match.menuByDay.values()].flatMap((m) =>
+      dishIngredientsById(m.dishId)
+    )
+    const items = consolidate(all)
+    if (!items.length) return
+    onAddToList(items, 'Weekmenu')
+    setAdded((a) => ({ ...a, week: true }))
   }
 
   // ── Sleep-interactie (pointer) ──
@@ -90,6 +126,7 @@ export default function MatchSwiper({
   const dayLabel = WEEKDAYS.find((w) => w.key === day)?.long ?? ''
   const rotation = Math.max(-12, Math.min(12, drag.dx / 8))
   const verdict = drag.dx > 40 ? 'yes' : drag.dx < -40 ? 'no' : null
+  const menuCount = match.menuByDay.size
 
   return (
     <div>
@@ -143,9 +180,7 @@ export default function MatchSwiper({
             <span className="dish-card__emoji">{top.emoji}</span>
             <h2 className="dish-card__title">{top.title}</h2>
             <p className="dish-card__desc">{top.description}</p>
-            <span className="dish-card__count">
-              Nog {queue.length} te gaan
-            </span>
+            <span className="dish-card__count">Nog {queue.length} te gaan</span>
           </div>
         ) : (
           <div className="dish-card dish-card--empty">
@@ -156,7 +191,10 @@ export default function MatchSwiper({
             <button
               type="button"
               className="btn btn--ghost btn--small"
-              onClick={() => setDeck(defaultDeck())}
+              onClick={() => {
+                setDeck(defaultDeck())
+                setSeen({})
+              }}
             >
               <RefreshCw size={14} strokeWidth={1.75} /> Opnieuw
             </button>
@@ -226,6 +264,7 @@ export default function MatchSwiper({
         ) : (
           matches.map((m) => {
             const locked = match.menuByDay.get(day)?.dishId === m.dishId
+            const hasIngredients = dishIngredientsById(m.dishId).length > 0
             return (
               <div key={m.dishId} className="match-row">
                 <span className="match-row__emoji">{m.emoji}</span>
@@ -235,24 +274,41 @@ export default function MatchSwiper({
                     {m.voters.join(' & ')} vinden dit lekker
                   </div>
                 </div>
-                <button
-                  type="button"
-                  className={`btn btn--small ${
-                    locked ? 'btn--ghost' : 'btn--sage'
-                  }`}
-                  onClick={() => match.lockToMenu(m, day)}
-                  disabled={locked}
-                >
-                  {locked ? (
-                    <>
-                      <Lock size={13} strokeWidth={2} /> Op menu
-                    </>
-                  ) : (
-                    <>
-                      <CalendarCheck size={13} strokeWidth={2} /> Zet op menu
-                    </>
+                <div className="match-row__actions">
+                  {hasIngredients && (
+                    <button
+                      type="button"
+                      className="icon-btn"
+                      onClick={() => addDishToList(m.dishId, m.title)}
+                      aria-label="Ingrediënten op de lijst"
+                      title="Ingrediënten op de boodschappenlijst"
+                    >
+                      {added[m.dishId] ? (
+                        <Check size={15} strokeWidth={2.25} />
+                      ) : (
+                        <ShoppingBasket size={15} strokeWidth={1.75} />
+                      )}
+                    </button>
                   )}
-                </button>
+                  <button
+                    type="button"
+                    className={`btn btn--small ${
+                      locked ? 'btn--ghost' : 'btn--sage'
+                    }`}
+                    onClick={() => match.lockToMenu(m, day)}
+                    disabled={locked}
+                  >
+                    {locked ? (
+                      <>
+                        <Lock size={13} strokeWidth={2} /> Op menu
+                      </>
+                    ) : (
+                      <>
+                        <CalendarCheck size={13} strokeWidth={2} /> Op menu
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
             )
           })
@@ -293,6 +349,31 @@ export default function MatchSwiper({
             )
           })}
         </div>
+
+        {menuCount > 0 && (
+          <button
+            type="button"
+            className="btn btn--primary btn--block"
+            style={{ marginTop: 'var(--sp-3)' }}
+            onClick={addWeekToList}
+          >
+            {added.week ? (
+              <>
+                <Check size={16} strokeWidth={2.25} /> Toegevoegd aan de lijst
+              </>
+            ) : (
+              <>
+                <ShoppingBasket size={16} strokeWidth={1.75} /> Boodschappen voor
+                de week ({menuCount})
+              </>
+            )}
+          </button>
+        )}
+        {menuCount > 0 && (
+          <p className="match-section__hint">
+            We voegen samen — twee keer 500 ml melk wordt één pak van 1 l.
+          </p>
+        )}
       </section>
     </div>
   )

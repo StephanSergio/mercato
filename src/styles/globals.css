@@ -7,25 +7,28 @@
    ============================================================ */
 
 :root {
-  /* ── Palette ── */
-  --c-parchment:    #F4F4F2;   /* Page background — cool neutral off-white  */
-  --c-surface:      #FFFFFF;   /* Cards, rows                              */
-  --c-ink:          #161615;   /* Primary text — near-black                 */
-  --c-stone:        #6E6E69;   /* Secondary text, captions (muted)          */
-  --c-faint:        #A2A29C;   /* Metadata, numerals at rest, placeholders  */
-  --c-olive:        #161615;   /* "On list" / active — solid ink (mono)     */
-  --c-olive-soft:   #ECECE8;   /* Soft neutral wash for chips/backgrounds   */
-  --c-night:        #161615;   /* Primary CTA — near-black                   */
-  --c-night-hover:  #000000;   /* CTA hover / pressed                       */
-  --c-copper:       #161615;   /* Structural accent → ink (was ochre)       */
-  --c-copper-soft:  #ECECE8;   /* Neutral wash                              */
-  --c-sand:         #E4E4E0;   /* Borders, dividers (hairline)              */
-  --c-highlight:    #FBF1EF;   /* Sale/promo background — faint red wash     */
-  --c-danger:       #B23A2E;   /* Destructive                               */
-  --c-sale:         #B23A2E;   /* Sale accent — single restrained red       */
-  --c-sale-soft:    #FBF1EF;   /* Soft red wash                             */
-  --c-leader-dot:   #E4E4E0;   /* (legacy — leader line removed)            */
-  --c-numeral:      #6E6E69;   /* Numerals — muted grey                     */
+  /* ── Palette ──
+     Direction: soft, feminine, pastel — on a bright white canvas.
+     Text stays a warm deep plum (legible), never harsh black; accents
+     are dusty rose, sage and mauve held against lots of white. */
+  --c-parchment:    #FFFCFD;   /* Page background — bright, a whisper of blush */
+  --c-surface:      #FFFFFF;   /* Cards, rows                                  */
+  --c-ink:          #3A2E37;   /* Primary text — warm deep plum (soft, not black) */
+  --c-stone:        #8C7B85;   /* Secondary text, captions (muted mauve-grey)  */
+  --c-faint:        #BBA9B3;   /* Metadata, numerals at rest, placeholders     */
+  --c-olive:        #7FA98C;   /* "On list" / active / match — soft sage       */
+  --c-olive-soft:   #EAF3ED;   /* Soft sage wash for chips/backgrounds         */
+  --c-night:        #A86086;   /* Primary CTA — dusty rose                      */
+  --c-night-hover:  #8E4E70;   /* CTA hover / pressed                          */
+  --c-copper:       #C08CAE;   /* Structural accent — soft mauve                */
+  --c-copper-soft:  #F7ECF3;   /* Mauve wash                                   */
+  --c-sand:         #F0E4EA;   /* Borders, dividers (hairline, warm pink-grey) */
+  --c-highlight:    #FDF2F6;   /* Sale/promo background — soft pink wash        */
+  --c-danger:       #C66B7E;   /* Destructive — soft rose-red                   */
+  --c-sale:         #C66B7E;   /* Sale accent — soft rose-red                   */
+  --c-sale-soft:    #FCEEF2;   /* Soft pink wash                               */
+  --c-leader-dot:   #F0E4EA;   /* (legacy — leader line removed)               */
+  --c-numeral:      #8C7B85;   /* Numerals — muted mauve-grey                  */
 
   /* ── Typography — all sans (no serif) ── */
   --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
@@ -65,9 +68,9 @@
   --max-width:         720px;
 
   /* ── Shadows ── */
-  --shadow-card:   0 1px 3px rgba(28, 25, 23, 0.04);
-  --shadow-modal:  0 24px 48px rgba(28, 25, 23, 0.14),
-                   0 4px 12px rgba(28, 25, 23, 0.06);
+  --shadow-card:   0 1px 3px rgba(120, 70, 100, 0.06);
+  --shadow-modal:  0 24px 48px rgba(120, 70, 100, 0.16),
+                   0 4px 12px rgba(120, 70, 100, 0.08);
 }
 
 /* ── Reset ── */

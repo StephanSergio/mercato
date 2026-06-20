@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Check, X, Trash2, ShoppingCart, Minus, Plus } from 'lucide-react'
 import CategoryHeader from './ui/CategoryHeader'
 import SaleBadge from './ui/SaleBadge'
@@ -13,6 +13,7 @@ interface ShoppingListProps {
   onSetQty: (item: ShoppingItem, qty: number) => void
   onRemove: (id: string) => void
   onClearChecked: () => void
+  onAddManual: (name: string) => void
 }
 
 interface Group {
@@ -31,7 +32,39 @@ export default function ShoppingList({
   onSetQty,
   onRemove,
   onClearChecked,
+  onAddManual,
 }: ShoppingListProps) {
+  const [draft, setDraft] = useState('')
+
+  // Quick-add balk: handmatig een item toevoegen (los van een recept).
+  function submitDraft(e: React.FormEvent) {
+    e.preventDefault()
+    const name = draft.trim()
+    if (!name) return
+    onAddManual(name)
+    setDraft('')
+  }
+
+  const quickAdd = (
+    <form className="quick-add" onSubmit={submitDraft}>
+      <input
+        className="quick-add__input"
+        type="text"
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        placeholder="Zelf iets toevoegen…"
+        aria-label="Item toevoegen aan de lijst"
+      />
+      <button
+        type="submit"
+        className="quick-add__btn"
+        disabled={!draft.trim()}
+        aria-label="Toevoegen"
+      >
+        <Plus size={18} strokeWidth={2.25} />
+      </button>
+    </form>
+  )
   // Map ingredientId -> ingredient (voor actuele aanbiedingsinfo).
   const ingredientById = useMemo(() => {
     const m = new Map<string, Ingredient>()
@@ -77,21 +110,25 @@ export default function ShoppingList({
 
   if (total === 0) {
     return (
-      <div className="empty-state">
-        <span className="empty-state__icon" aria-hidden="true">
-          <ShoppingCart size={40} strokeWidth={1.5} />
-        </span>
-        <p>Je winkellijst is nog leeg.</p>
-        <p className="muted">
-          Ga naar <strong>Ingrediënten</strong> en tik items aan om ze toe te
-          voegen.
-        </p>
+      <div>
+        {quickAdd}
+        <div className="empty-state">
+          <span className="empty-state__icon" aria-hidden="true">
+            <ShoppingCart size={40} strokeWidth={1.5} />
+          </span>
+          <p>Je winkellijst is nog leeg.</p>
+          <p className="muted">
+            Tik hierboven iets in, of ga naar <strong>Ingrediënten</strong> en
+            tik items aan om ze toe te voegen.
+          </p>
+        </div>
       </div>
     )
   }
 
   return (
     <div>
+      {quickAdd}
       <div className="progress">
         <div className="progress__head">
           <span className="progress__label">Afgevinkt</span>

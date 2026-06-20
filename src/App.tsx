@@ -101,6 +101,9 @@ export default function App() {
             onSetQty={shopping.setQty}
             onRemove={shopping.removeItem}
             onClearChecked={shopping.clearChecked}
+            onAddManual={(name) =>
+              shopping.addManual(name, userName || 'Handmatig')
+            }
           />
         )}
 
@@ -126,6 +129,9 @@ export default function App() {
             userName={userName}
             hasName={hasName}
             onNeedName={() => setShowNameModal(true)}
+            onAddToList={(items, addedBy) =>
+              shopping.addConsolidated(items, addedBy)
+            }
           />
         )}
 

@@ -12,7 +12,11 @@ import {
   getDocs,
 } from 'firebase/firestore'
 import { db, COLLECTIONS } from '../firebase'
-import type { AddToListInput, ShoppingItem } from '../types'
+import type { AddToListInput, ConsolidatedItem, ShoppingItem } from '../types'
+
+// Eerste letter een hoofdletter (voor nette weergave van vrije-tekst-items).
+const capitalize = (s: string) =>
+  s ? s.charAt(0).toUpperCase() + s.slice(1) : s
 
 // Realtime hook voor de gezamenlijke winkellijst.
 export function useShoppingList() {
@@ -71,6 +75,48 @@ export function useShoppingList() {
     return updateDoc(doc(db, COLLECTIONS.shoppingList, item.id), { qty })
   }
 
+  // Voegt toe op naam (vrije tekst of recept). Bestaat de naam al, dan tellen
+  // we het aantal op i.p.v. een duplicaat te maken.
+  const addByName = (
+    name: string,
+    category: string,
+    qty: number,
+    addedBy: string
+  ) => {
+    const clean = name.trim()
+    if (!clean) return Promise.resolve()
+    const existing = items.find(
+      (i) => i.name.toLowerCase() === clean.toLowerCase()
+    )
+    if (existing) {
+      return updateDoc(doc(db, COLLECTIONS.shoppingList, existing.id), {
+        qty: (existing.qty ?? 1) + qty,
+        checked: false,
+      })
+    }
+    return addDoc(collection(db, COLLECTIONS.shoppingList), {
+      ingredientId: '',
+      name: clean,
+      category: category || 'Overig',
+      qty,
+      checked: false,
+      addedBy: addedBy || 'Onbekend',
+      addedAt: serverTimestamp(),
+    })
+  }
+
+  // Handmatig één item toevoegen (vrije tekst, categorie "Overig").
+  const addManual = (name: string, addedBy: string) =>
+    addByName(capitalize(name), 'Overig', 1, addedBy)
+
+  // Voegt een reeks samengevoegde recept-ingrediënten toe (met aantal verpakkingen).
+  const addConsolidated = (items_: ConsolidatedItem[], addedBy: string) =>
+    Promise.all(
+      items_.map((c) =>
+        addByName(capitalize(c.name), c.category, c.packages, addedBy)
+      )
+    )
+
   const removeItem = (id: string) =>
     deleteDoc(doc(db, COLLECTIONS.shoppingList, id))
 
@@ -96,6 +142,8 @@ export function useShoppingList() {
     items,
     loading,
     addItem,
+    addManual,
+    addConsolidated,
     setQty,
     toggleChecked,
     removeItem,

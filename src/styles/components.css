@@ -131,11 +131,12 @@
 }
 
 .btn--sage {
-  background: var(--c-olive);
-  color: #fff;
+  background: var(--c-olive-soft);
+  color: var(--c-ink);
+  border: 1px solid var(--c-olive);
 }
 .btn--sage:hover:not(:disabled) {
-  background: #5c6b51;
+  background: #dcebe1;
 }
 
 .btn--ghost {
@@ -469,7 +470,7 @@
 }
 .check-row__remove:hover {
   color: var(--c-danger);
-  background: rgba(139, 58, 47, 0.06);
+  background: rgba(198, 107, 126, 0.1);
 }
 
 /* ─────────── Bottom navigation ─────────── */
@@ -483,7 +484,7 @@
   justify-content: center;
   padding: var(--sp-2) var(--sp-2)
     calc(var(--sp-2) + env(safe-area-inset-bottom));
-  background: rgba(244, 244, 242, 0.85);
+  background: rgba(255, 252, 253, 0.85);
   backdrop-filter: saturate(180%) blur(16px);
   -webkit-backdrop-filter: saturate(180%) blur(16px);
   border-top: 1px solid var(--c-sand);
@@ -930,7 +931,7 @@
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(28, 25, 23, 0.55);
+  background: rgba(58, 46, 55, 0.5);
   display: grid;
   place-items: center;
   padding: var(--sp-5);
@@ -1132,8 +1133,8 @@
   transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 .day-chip--active {
-  background: var(--c-ink);
-  border-color: var(--c-ink);
+  background: var(--c-night);
+  border-color: var(--c-night);
   color: #fff;
 }
 .day-chip--locked:not(.day-chip--active) {
@@ -1288,7 +1289,7 @@
   height: 20px;
   padding: 0 6px;
   border-radius: var(--radius-pill);
-  background: var(--c-olive);
+  background: var(--c-night);
   color: #fff;
   font-family: var(--font-body);
   font-size: var(--text-overline);
@@ -1378,4 +1379,62 @@
   flex-shrink: 0;
   width: 32px;
   height: 32px;
+}
+
+/* Match-rij acties (basket + op-menu) */
+.match-row__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* Hint onder de weekmenu-knop */
+.match-section__hint {
+  margin-top: var(--sp-2);
+  font-size: var(--text-caption);
+  color: var(--c-stone);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* ─────────── Quick-add balk (winkellijst) ─────────── */
+.quick-add {
+  display: flex;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+}
+.quick-add__input {
+  flex: 1;
+  min-width: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid var(--c-sand);
+  border-radius: var(--radius-button);
+  background: var(--c-surface);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.quick-add__input::placeholder {
+  color: var(--c-faint);
+}
+.quick-add__input:focus {
+  border-color: var(--c-night);
+}
+.quick-add__btn {
+  flex-shrink: 0;
+  width: var(--touch-target);
+  height: var(--touch-target);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-button);
+  background: var(--c-night);
+  color: #fff;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+.quick-add__btn:hover:not(:disabled) {
+  background: var(--c-night-hover);
+}
+.quick-add__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }

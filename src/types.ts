@@ -67,11 +67,32 @@ export interface Recipe {
 // Eén gerecht-suggestie op een swipe-kaart. `id` is een stabiele slug
 // van de titel, zodat stemmen van verschillende mensen op hetzelfde
 // gerecht aan elkaar gekoppeld kunnen worden.
+// Eén ingrediënt-regel van een gerecht, met hoeveelheid + eenheid.
+export type IngredientUnit = 'ml' | 'g' | 'stuks' | 'el' | 'tl' | 'snuf'
+
+export interface DishIngredient {
+  name: string
+  qty: number
+  unit: IngredientUnit
+}
+
 export interface DishIdea {
   id: string
   emoji: string
   title: string
   description: string
+  // Optioneel: ingrediënten voor de boodschappenlijst (vaste deck heeft ze).
+  ingredients?: DishIngredient[]
+}
+
+// Een samengevoegd boodschappen-item: totaal benodigd + aantal verpakkingen.
+export interface ConsolidatedItem {
+  name: string
+  category: string
+  unit: IngredientUnit
+  totalQty: number // som over alle gerechten
+  packages: number // aantal te kopen verpakkingen (afgerond naar boven)
+  note: string // bv. "1 l nodig" of "3 stuks nodig"
 }
 
 // Eén stem (ja/nee) van één persoon op één gerecht, voor één dag/week.
