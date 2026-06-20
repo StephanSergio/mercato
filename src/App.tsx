@@ -92,6 +92,7 @@ export default function App() {
       </header>
 
       <main>
+        <div key={screen} className="screen">
         {screen === 'list' && (
           <ShoppingList
             items={shopping.items}
@@ -151,6 +152,7 @@ export default function App() {
             }}
           />
         )}
+        </div>
       </main>
 
       <BottomNav

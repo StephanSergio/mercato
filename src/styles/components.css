@@ -115,16 +115,19 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease,
-    opacity 0.2s ease;
+    opacity 0.2s ease, transform 0.12s ease;
 }
 .btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
+.btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
 
 .btn--primary {
   background: var(--c-night);
-  color: #fff;
+  color: var(--c-ink);
 }
 .btn--primary:hover:not(:disabled) {
   background: var(--c-night-hover);
@@ -136,7 +139,7 @@
   border: 1px solid var(--c-olive);
 }
 .btn--sage:hover:not(:disabled) {
-  background: #dcebe1;
+  background: #e4dcfa;
 }
 
 .btn--ghost {
@@ -196,7 +199,7 @@
   padding: 2px 10px;
   border-radius: var(--radius-pill);
   background: var(--c-sale);
-  color: #fff;
+  color: var(--c-ink);
   font-size: var(--text-overline);
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -323,7 +326,7 @@
 .ingredient-row__indicator--active {
   background: var(--c-olive);
   border-color: var(--c-olive);
-  color: #fff;
+  color: var(--c-ink);
 }
 
 /* ─────────── Shopping list — progress ─────────── */
@@ -388,7 +391,7 @@
 .check-row__box--checked {
   background: var(--c-olive);
   border-color: var(--c-olive);
-  color: #fff;
+  color: var(--c-ink);
 }
 .check-row__main {
   display: flex;
@@ -533,7 +536,7 @@
   top: -4px;
   right: -10px;
   background: var(--c-night);
-  color: #fff;
+  color: var(--c-ink);
   font-size: 10px;
   font-weight: 700;
   min-width: 16px;
@@ -872,7 +875,7 @@
   height: 28px;
   border-radius: 50%;
   background: var(--c-night);
-  color: #fff;
+  color: var(--c-ink);
   font-family: var(--font-body);
   font-weight: 700;
   font-size: var(--text-caption);
@@ -905,8 +908,8 @@
 .spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #fff;
+  border: 2px solid rgba(58, 46, 55, 0.2);
+  border-top-color: var(--c-ink);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }
@@ -1135,7 +1138,7 @@
 .day-chip--active {
   background: var(--c-night);
   border-color: var(--c-night);
-  color: #fff;
+  color: var(--c-ink);
 }
 .day-chip--locked:not(.day-chip--active) {
   border-color: var(--c-olive);
@@ -1290,7 +1293,7 @@
   padding: 0 6px;
   border-radius: var(--radius-pill);
   background: var(--c-night);
-  color: #fff;
+  color: var(--c-ink);
   font-family: var(--font-body);
   font-size: var(--text-overline);
   font-weight: 700;
@@ -1428,7 +1431,7 @@
   place-items: center;
   border-radius: var(--radius-button);
   background: var(--c-night);
-  color: #fff;
+  color: var(--c-ink);
   transition: background 0.2s ease, opacity 0.2s ease;
 }
 .quick-add__btn:hover:not(:disabled) {
@@ -1437,4 +1440,90 @@
 .quick-add__btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* ============================================================
+   Motion — entrances + micro-interactions (more lively)
+   ============================================================ */
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes cardIn {
+  0%   { opacity: 0; transform: scale(0.92) translateY(12px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes pop {
+  0%   { opacity: 0; transform: scale(0.85); }
+  60%  { transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes popDot {
+  0%   { transform: scale(0); }
+  60%  { transform: scale(1.5); }
+  100% { transform: scale(1); }
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  45%      { transform: scale(1.18); }
+  60%      { transform: scale(1.04); }
+}
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Each tab switch animates its content in (keyed remount in App). */
+.screen {
+  animation: screenIn 0.34s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* Playful header title — gently drops in per screen. */
+.app-header__title {
+  animation: riseIn 0.4s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* Fresh swipe card pops in (keyed by dish id in MatchSwiper). */
+.dish-card {
+  animation: cardIn 0.3s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* Recipe + matches appear with a soft pop (mount-only, no replay on update). */
+.recipe-card {
+  animation: cardIn 0.36s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.match-row {
+  animation: pop 0.32s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.match-section__badge {
+  animation: pop 0.32s ease;
+}
+
+/* The "like" heart has a gentle resting pulse. */
+.swipe-btn--yes svg {
+  animation: heartbeat 2s ease-in-out infinite;
+}
+
+/* Active-tab dot springs in when you switch tabs. */
+.nav-btn--active::after {
+  animation: popDot 0.34s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* Hover lift on rows + cards (desktop); press/touch handled elsewhere. */
+.ingredient-row,
+.check-row,
+.match-row,
+.week-menu__row {
+  transition: transform 0.16s ease, box-shadow 0.2s ease, opacity 0.3s ease,
+    border-color 0.2s ease, background 0.2s ease;
+}
+@media (hover: hover) {
+  .ingredient-row:hover,
+  .check-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(120, 70, 100, 0.12);
+  }
+  .dish-card:hover {
+    box-shadow: 0 10px 28px rgba(120, 70, 100, 0.16);
+  }
 }

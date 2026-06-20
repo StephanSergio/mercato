@@ -11,27 +11,29 @@
      Direction: soft, feminine, pastel — on a bright white canvas.
      Text stays a warm deep plum (legible), never harsh black; accents
      are dusty rose, sage and mauve held against lots of white. */
-  --c-parchment:    #FFFCFD;   /* Page background — bright, a whisper of blush */
+  --c-parchment:    #FFFBFE;   /* Page background — bright, a whisper of pink   */
   --c-surface:      #FFFFFF;   /* Cards, rows                                  */
   --c-ink:          #3A2E37;   /* Primary text — warm deep plum (soft, not black) */
-  --c-stone:        #8C7B85;   /* Secondary text, captions (muted mauve-grey)  */
-  --c-faint:        #BBA9B3;   /* Metadata, numerals at rest, placeholders     */
-  --c-olive:        #7FA98C;   /* "On list" / active / match — soft sage       */
-  --c-olive-soft:   #EAF3ED;   /* Soft sage wash for chips/backgrounds         */
-  --c-night:        #A86086;   /* Primary CTA — dusty rose                      */
-  --c-night-hover:  #8E4E70;   /* CTA hover / pressed                          */
-  --c-copper:       #C08CAE;   /* Structural accent — soft mauve                */
-  --c-copper-soft:  #F7ECF3;   /* Mauve wash                                   */
-  --c-sand:         #F0E4EA;   /* Borders, dividers (hairline, warm pink-grey) */
-  --c-highlight:    #FDF2F6;   /* Sale/promo background — soft pink wash        */
-  --c-danger:       #C66B7E;   /* Destructive — soft rose-red                   */
-  --c-sale:         #C66B7E;   /* Sale accent — soft rose-red                   */
-  --c-sale-soft:    #FCEEF2;   /* Soft pink wash                               */
-  --c-leader-dot:   #F0E4EA;   /* (legacy — leader line removed)               */
-  --c-numeral:      #8C7B85;   /* Numerals — muted mauve-grey                  */
+  --c-stone:        #897784;   /* Secondary text, captions (muted mauve-grey)  */
+  --c-faint:        #C2B0BB;   /* Metadata, numerals at rest, placeholders     */
+  /* Colored fills carry DARK plum text (--c-ink), so pastels can stay bright. */
+  --c-olive:        #B0A1EC;   /* Success / active / on-list / match — bright lilac */
+  --c-olive-soft:   #EFEBFC;   /* Soft lilac wash                              */
+  --c-night:        #F2A3CB;   /* Primary CTA — bright candy pink               */
+  --c-night-hover:  #EC8ABC;   /* CTA hover / pressed                          */
+  --c-copper:       #D99FD6;   /* Structural accent — bright mauve              */
+  --c-copper-soft:  #FAEBF8;   /* Mauve wash                                   */
+  --c-sand:         #F2DCEB;   /* Borders, dividers (hairline, soft pink)       */
+  --c-highlight:    #FFF0E6;   /* Sale/promo background — soft peach wash        */
+  --c-danger:       #C96FA6;   /* Destructive — berry (pink-purple, no red)      */
+  --c-sale:         #FFC79E;   /* Sale accent — warm peach                      */
+  --c-sale-soft:    #FFF0E6;   /* Soft peach wash                              */
+  --c-leader-dot:   #F2DCEB;   /* (legacy — leader line removed)               */
+  --c-numeral:      #897784;   /* Numerals — muted mauve-grey                  */
 
-  /* ── Typography — all sans (no serif) ── */
-  --font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+  /* ── Typography ── */
+  /* Display = Fredoka: rounded, friendly, a little playful. Body = DM Sans. */
+  --font-display: 'Fredoka', -apple-system, BlinkMacSystemFont, 'Segoe UI',
                    Roboto, sans-serif;
   --font-body:    'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI',
                    Roboto, sans-serif;
@@ -55,12 +57,10 @@
   --sp-7:  48px;
 
   /* ── Shape ── */
-  --radius-card:    3px;    /* Sharp, couture, precise                    */
-  --radius-button:  3px;
-  /* "Optie A — bijna vierkant": géén pillen in de UI. Badges/chips/track
-     gebruiken dezelfde scherpe radius; alleen echte cirkels (knoppen,
-     spinner) gebruiken border-radius:50% direct. */
-  --radius-pill:    2px;
+  /* Lightly rounded, soft and friendly (not sharp). Chips/badges are pills. */
+  --radius-card:    16px;   /* Cards, rows, panels                        */
+  --radius-button:  12px;   /* Buttons, inputs                            */
+  --radius-pill:    999px;  /* Chips, badges, tracks — fully rounded       */
 
   /* ── Layout ── */
   --touch-target:      44px;

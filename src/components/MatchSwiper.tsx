@@ -160,6 +160,7 @@ export default function MatchSwiper({
       <div className="swipe-deck">
         {top ? (
           <div
+            key={top.id}
             className="dish-card"
             style={{
               transform: `translateX(${drag.dx}px) rotate(${rotation}deg)`,
