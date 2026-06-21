@@ -1,34 +1,33 @@
 rules_version = '2';
 
 // ============================================================
-// Mercato Firestore-regels
+// GEDEELDE Firestore-regels — project `fitnessapp-92b38`
 // ------------------------------------------------------------
-// De app gebruikt GEEN login (bewuste keuze: het gezin deelt de
-// lijst direct). Deze regels staan lezen/schrijven open op de drie
-// app-collecties, en blokkeren al het andere.
+// LET OP: dit Firebase-project wordt door TWEE apps gedeeld:
+//   • Mercato  — geen login; het gezin deelt de lijst direct.
+//   • CleanFit — wél login; data per gebruiker onder /users/{uid}.
 //
-// LET OP: open schrijven betekent dat iedereen die de proj*-config
-// kent kan schrijven. Prima voor een privé gezins-app. Wil je het
-// dichter? Voeg Firebase Anonymous Auth toe en eis `request.auth`.
+// Eén project = één regelbestand. Beide repos bevatten exact deze
+// regels, zodat het publiceren vanuit de ene app de andere niet
+// platlegt. Pas je iets aan? Werk dan BEIDE repos bij
+// (mercato/firestore.rules én CleanFit/firestore.rules) en publiceer.
 // ============================================================
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    match /ingredients/{doc} {
-      allow read, write: if true;
-    }
-    match /shoppingList/{doc} {
-      allow read, write: if true;
-    }
-    match /categories/{doc} {
-      allow read, write: if true;
-    }
-    match /dishVotes/{doc} {
-      allow read, write: if true;
-    }
-    match /weekMenu/{doc} {
-      allow read, write: if true;
+    // ── Mercato — open (geen login, privé gezins-app) ──
+    match /ingredients/{doc}  { allow read, write: if true; }
+    match /shoppingList/{doc} { allow read, write: if true; }
+    match /categories/{doc}   { allow read, write: if true; }
+    match /dishVotes/{doc}    { allow read, write: if true; }
+    match /weekMenu/{doc}     { allow read, write: if true; }
+
+    // ── CleanFit — per gebruiker (vereist login) ──
+    // Recursieve wildcard {document=**} dekt steps, workouts,
+    // programMeta, sessionDrafts, presets, enz.
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
     // Alles wat hier niet expliciet genoemd is, blijft dicht.
