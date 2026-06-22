@@ -50,6 +50,17 @@ Geef ALLEEN JSON terug (geen uitleg eromheen) met deze structuur:
 }
 Gebruik telkens precies één passende emoji per gerecht.`
 
+// Prompt voor CleanFit's Meals-scherm: gezonde, caloriearme seizoensmaaltijden.
+const MEALS_SYSTEM_PROMPT = `You are a nutritionist. Suggest healthy, lower-calorie meals that use produce in season for the given season.
+Return ONLY JSON (no prose) in this exact shape:
+{
+  "breakfast": [ { "name": "…", "kcal": 280, "description": "one short sentence", "tags": ["veg"] } ],
+  "lunch":     [ … ],
+  "dinner":    [ … ],
+  "snack":     [ … ]
+}
+Give 3 items per meal type. kcal is a realistic per-serving estimate. tags are from: "veg", "vegan", "high-protein". One short sentence per description.`
+
 // Beperk welke origins de proxy mogen aanroepen. Pas aan naar jouw domein(en).
 const ALLOWED_ORIGINS = [
   'http://localhost:5173',
@@ -65,10 +76,14 @@ exports.recipe = onRequest(
       return
     }
 
-    // Twee modi delen deze proxy:
-    //   • standaard: { ingredients: [...] }      → één recept
-    //   • Match-scherm: { mode: "dishes", count } → deck gerecht-suggesties
-    const mode = req.body?.mode === 'dishes' ? 'dishes' : 'recipe'
+    // Drie modi delen deze proxy:
+    //   • standaard: { ingredients: [...] }       → één recept (Mercato)
+    //   • Match-scherm: { mode: "dishes", count }  → deck gerecht-suggesties
+    //   • CleanFit Meals: { mode: "meals", season } → seizoensmaaltijden (JSON)
+    const mode =
+      req.body?.mode === 'dishes' ? 'dishes'
+      : req.body?.mode === 'meals' ? 'meals'
+      : 'recipe'
 
     let system
     let userContent
@@ -79,6 +94,12 @@ exports.recipe = onRequest(
       system = DISHES_SYSTEM_PROMPT
       userContent = `Stel ${count} gevarieerde avondmaaltijden voor (verschillende keukens, mix van vlees, vis en vega).`
       maxTokens = 1200
+    } else if (mode === 'meals') {
+      const allowed = ['spring', 'summer', 'autumn', 'winter']
+      const season = allowed.includes(req.body?.season) ? req.body.season : 'summer'
+      system = MEALS_SYSTEM_PROMPT
+      userContent = `Season: ${season}. Suggest seasonal meals.`
+      maxTokens = 1500
     } else {
       const ingredients = req.body?.ingredients
       if (!Array.isArray(ingredients) || ingredients.length === 0) {
